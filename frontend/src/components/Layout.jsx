@@ -57,8 +57,16 @@ const Layout = () => {
           overflow: 'hidden'
         }}
       >
-        <div style={{ marginBottom: '30px', fontSize: '20px', fontWeight: 'bold' }}>
-          {sidebarOpen ? '🚌 Cashless Transit' : '🚌'}
+        <div style={{ marginBottom: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <img
+            src="/logo.png"
+            alt="IHS Cashless Transport"
+            style={{
+              width: sidebarOpen ? '180px' : '40px',
+              height: 'auto',
+              transition: 'width 0.3s'
+            }}
+          />
         </div>
         <nav>
           {menuItems.map((item) => (
