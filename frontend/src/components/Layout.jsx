@@ -45,77 +45,233 @@ const Layout = () => {
   });
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      {/* Sidebar */}
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+      {/* Modern Sidebar */}
       <div
+        className="sidebar"
         style={{
-          width: sidebarOpen ? '250px' : '60px',
-          backgroundColor: '#2c3e50',
+          width: sidebarOpen ? '280px' : '80px',
           color: 'white',
-          padding: '20px',
-          transition: 'width 0.3s',
-          overflow: 'hidden'
+          padding: '24px 16px',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative'
         }}
       >
-        <div style={{ marginBottom: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        {/* Toggle Button */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '-15px',
+            width: '30px',
+            height: '30px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #7FB539 0%, #FDB813 100%)',
+            border: 'none',
+            color: 'white',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            transition: 'all 0.3s ease',
+            zIndex: 10
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.1) rotate(180deg)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+          }}
+        >
+          {sidebarOpen ? '◀' : '▶'}
+        </button>
+
+        {/* Logo Section */}
+        <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: '10px' }}>
           <img
             src="/logo.png"
             alt="IHS Cashless Transport"
             style={{
-              width: sidebarOpen ? '180px' : '40px',
+              width: sidebarOpen ? '200px' : '48px',
               height: 'auto',
-              transition: 'width 0.3s'
+              transition: 'all 0.3s ease',
+              filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))'
             }}
           />
         </div>
-        <nav>
-          {menuItems.map((item) => (
+
+        {/* Navigation */}
+        <nav style={{ flex: 1 }}>
+          {menuItems.map((item, index) => (
             <Link
               key={item.path}
               to={item.path}
+              className="sidebar-item"
               style={{
-                display: 'block',
-                padding: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '14px 16px',
                 color: 'white',
                 textDecoration: 'none',
-                marginBottom: '5px',
-                borderRadius: '4px',
-                transition: 'background-color 0.2s'
+                marginBottom: '8px',
+                borderRadius: '12px',
+                fontSize: '15px',
+                fontWeight: '500',
+                position: 'relative',
+                animation: `slideInLeft 0.3s ease-out ${index * 0.05}s both`
               }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = '#34495e')}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
             >
-              <span style={{ marginRight: '10px' }}>{item.icon}</span>
-              {sidebarOpen && item.label}
+              <span style={{
+                fontSize: '24px',
+                minWidth: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'transform 0.3s ease'
+              }}>
+                {item.icon}
+              </span>
+              {sidebarOpen && (
+                <span style={{
+                  marginLeft: '16px',
+                  whiteSpace: 'nowrap',
+                  transition: 'opacity 0.3s ease'
+                }}>
+                  {item.label}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
-        <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid #34495e' }}>
-          <div style={{ padding: '12px', fontSize: '14px', opacity: 0.8 }}>
-            {sidebarOpen && `Logged in as: ${user?.username || 'User'}`}
-            {sidebarOpen && <div style={{ fontSize: '12px', marginTop: '5px' }}>Role: {user?.role}</div>}
-          </div>
+
+        {/* User Info & Logout */}
+        <div style={{
+          marginTop: 'auto',
+          paddingTop: '24px',
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+        }}>
+          {sidebarOpen && (
+            <div style={{
+              padding: '16px',
+              background: 'rgba(127, 181, 57, 0.1)',
+              borderRadius: '12px',
+              marginBottom: '12px',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(127, 181, 57, 0.2)'
+            }}>
+              <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>
+                👤 {user?.username || 'User'}
+              </div>
+              <div style={{
+                fontSize: '12px',
+                opacity: 0.8,
+                textTransform: 'capitalize',
+                color: '#FDB813'
+              }}>
+                {user?.role?.replace('_', ' ')}
+              </div>
+            </div>
+          )}
           <button
             onClick={handleLogout}
+            className="btn-modern"
             style={{
               width: '100%',
-              padding: '10px',
-              backgroundColor: '#e74c3c',
+              padding: '12px',
+              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
               color: 'white',
               border: 'none',
-              borderRadius: '4px',
+              borderRadius: '12px',
               cursor: 'pointer',
-              marginTop: '10px'
+              fontWeight: '600',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 8px 20px rgba(239, 68, 68, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
             }}
           >
-            {sidebarOpen ? 'Logout' : '🚪'}
+            <span style={{ fontSize: '18px' }}>🚪</span>
+            {sidebarOpen && 'Logout'}
           </button>
         </div>
       </div>
 
       {/* Main Content */}
-      <div style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
-        <div style={{ padding: '20px' }}>
+      <div style={{
+        flex: 1,
+        backgroundColor: '#f8fafc',
+        overflowY: 'auto',
+        position: 'relative'
+      }}>
+        {/* Modern Header */}
+        <div className="header-glass" style={{
+          padding: '20px 32px',
+          position: 'sticky',
+          top: 0,
+          zIndex: 5,
+          marginBottom: '24px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            maxWidth: '1400px',
+            margin: '0 auto'
+          }}>
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: '700',
+              background: 'linear-gradient(135deg, #7FB539 0%, #FDB813 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              margin: 0
+            }}>
+              IHS Transport System
+            </h2>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px'
+            }}>
+              <div style={{
+                padding: '8px 16px',
+                background: 'linear-gradient(135deg, #7FB539 0%, #FDB813 100%)',
+                borderRadius: '20px',
+                color: 'white',
+                fontSize: '13px',
+                fontWeight: '600',
+                boxShadow: '0 4px 12px rgba(127, 181, 57, 0.3)'
+              }}>
+                ✨ {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div style={{
+          padding: '0 32px 32px',
+          maxWidth: '1400px',
+          margin: '0 auto',
+          animation: 'fadeIn 0.5s ease-out'
+        }}>
           <Outlet />
         </div>
       </div>
