@@ -1,8 +1,8 @@
 const express = require('express');
 const pool = require('../config/database');
 const { authenticateToken, authorize } = require('../middleware/auth');
-const mycashEnv = require('../config/mvatu');
-const { getMycashConfig } = require('../config/mvatu-loader');
+const mycashEnv = require('../config/mycash');
+const { getMycashConfig } = require('../config/mycash-loader');
 const mycashService = require('../payments/mvatu.service');
 
 const router = express.Router();
