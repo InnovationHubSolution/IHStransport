@@ -27,7 +27,17 @@ INSERT INTO system_settings (key, value)
 VALUES ('commission_rate', '5')
 ON CONFLICT (key) DO NOTHING;
 
--- Pending settlement is the gross of completed fares that are not yet in a settlement.
+-- Lifetime fare revenue is every completed fare, including ones already settled.
+UPDATE bus_owners bo
+SET total_revenue = COALESCE((
+  SELECT SUM(t.fare_amount)
+  FROM transactions t
+  JOIN buses b ON b.id = t.bus_id
+  WHERE b.bus_owner_id = bo.id
+    AND t.transaction_type = 'fare_payment'
+    AND t.status = 'completed'
+), 0),
+updated_at = CURRENT_TIMESTAMP;
 UPDATE bus_owners bo
 SET pending_settlement = COALESCE((
   SELECT SUM(t.fare_amount)
