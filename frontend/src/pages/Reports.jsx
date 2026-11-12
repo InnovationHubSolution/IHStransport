@@ -26,10 +26,10 @@ const Reports = () => {
 
   const fetchMycashTransactions = async () => {
     try {
-      const response = await api.get('/reports/mycash?limit=100');
+      const response = await api.get('/reports/mvatu?limit=100');
       setMycashTransactions(response.data.transactions);
     } catch (error) {
-      console.error('Failed to fetch MyCash transactions:', error);
+      console.error('Failed to fetch M-Vatu transactions:', error);
     }
   };
 
@@ -61,7 +61,7 @@ const Reports = () => {
             color: 'white'
           }}
         >
-          MyCash Transactions
+          M-Vatu Transactions
         </button>
       </div>
 
@@ -116,7 +116,7 @@ const Reports = () => {
 
       {activeTab === 'mycash' && (
         <div className="card">
-          <h2>MyCash Transaction Report</h2>
+          <h2>M-Vatu Transaction Report</h2>
           <table>
             <thead>
               <tr>
@@ -132,7 +132,7 @@ const Reports = () => {
             <tbody>
               {mycashTransactions.length === 0 ? (
                 <tr>
-                  <td colSpan="7" style={{ textAlign: 'center' }}>No MyCash transactions found</td>
+                  <td colSpan="7" style={{ textAlign: 'center' }}>No M-Vatu transactions found</td>
                 </tr>
               ) : (
                 mycashTransactions.map((tx) => (

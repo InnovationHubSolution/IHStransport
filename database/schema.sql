@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- MyCash transactions table
+-- M-Vatu transactions table
 CREATE TABLE IF NOT EXISTS mycash_transactions (
     id SERIAL PRIMARY KEY,
     order_id VARCHAR(255) UNIQUE NOT NULL,
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS settlements (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- System settings (admin-editable, e.g. MyCash API key)
+-- System settings (admin-editable, e.g. M-Vatu API key)
 CREATE TABLE IF NOT EXISTS system_settings (
     key VARCHAR(255) PRIMARY KEY,
     value TEXT,

@@ -15,7 +15,7 @@ const Signup = () => {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,8 +28,8 @@ const Signup = () => {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+    if (formData.password.length < 12) {
+      setError('Password must be at least 12 characters');
       return;
     }
 
@@ -65,7 +65,7 @@ const Signup = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#f5f5f5', padding: '20px' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', padding: '20px' }}>
       <div className="card" style={{ width: '100%', maxWidth: '500px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           <Link to="/landing" style={{ textDecoration: 'none', color: '#667eea', fontSize: '14px' }}>
@@ -73,9 +73,9 @@ const Signup = () => {
           </Link>
         </div>
         
-        <h1 style={{ marginBottom: '10px', textAlign: 'center', fontSize: '32px', color: '#000' }}>🚌 Create Account</h1>
-        <h2 style={{ marginBottom: '30px', textAlign: 'center', color: '#000', fontWeight: 'normal' }}>
-          Join the Bus Cashless System
+        <h1 style={{ marginBottom: '10px', textAlign: 'center', fontSize: '32px', color: '#0f172a' }}>Create an account</h1>
+        <h2 style={{ marginBottom: '30px', textAlign: 'center', color: '#334155', fontWeight: 'normal' }}>
+          Vanuatu Smart Transit
         </h2>
         
         {error && (
@@ -135,31 +135,36 @@ const Signup = () => {
             style={{ color: '#000' }}
           />
 
-          <label style={{ color: '#000' }}>Phone Number</label>
+          <label style={{ color: '#000' }}>Mobile number *</label>
           <input
             type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="5123 456"
+            required
+            placeholder="+678"
             style={{ color: '#000' }}
           />
 
           <label style={{ color: '#000' }}>Password *</label>
           <input
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             name="password"
             value={formData.password}
             onChange={handleChange}
             required
-            placeholder="Minimum 6 characters"
-            minLength={6}
+            placeholder="At least 12 characters"
+            minLength={12}
             style={{ color: '#000' }}
           />
+          <label style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '12px', color: '#000' }}>
+            <input type="checkbox" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} />
+            Show password
+          </label>
 
           <label style={{ color: '#000' }}>Confirm Password *</label>
           <input
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}

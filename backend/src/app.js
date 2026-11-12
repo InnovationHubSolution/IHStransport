@@ -14,6 +14,7 @@ const ownersRoutes = require('./owners/owners.routes');
 const customersRoutes = require('./customers/customers.routes');
 const reportsRoutes = require('./reports/reports.routes');
 const settingsRoutes = require('./settings/settings.routes');
+const settlementsRoutes = require('./settlements/settlements.routes');
 const devicesRoutes = require('./devices/devices.routes');
 
 const app = express();
@@ -112,6 +113,7 @@ app.use('/api/owners', ownersRoutes);
 app.use('/api/customers', customersRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/settlements', settlementsRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -99,7 +99,7 @@ const AgentDashboard = () => {
           <div style={{ padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
             <strong>💵 Assist Top-Up</strong>
             <p style={{ fontSize: '14px', color: '#666', marginTop: '5px' }}>
-              Help customers top up their cards via MyCash
+              Help customers top up their cards via M-Vatu
             </p>
           </div>
         </div>

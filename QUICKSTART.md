@@ -37,15 +37,15 @@ The frontend will start on `http://localhost:3000`
 
 - **URL**: http://localhost:3000
 - **Username**: `admin`
-- **Password**: `admin123`
+- **Password**: set outside this repository
 
 ⚠️ **IMPORTANT**: Change the admin password after first login!
 
 ## 📝 Next Steps
 
-1. **Configure MyCash API** (if you have credentials):
+1. **Configure M-Vatu API** (if you have credentials):
    - Edit `backend/.env`
-   - Add your MyCash API credentials
+   - Add your M-Vatu API credentials
 
 2. **Create Test Data**:
    - Create bus owners

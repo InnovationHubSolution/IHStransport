@@ -14,6 +14,9 @@ router.post('/register', async (req, res) => {
     if (!username || !password || !role) {
       return res.status(400).json({ error: 'Username, password, and role are required' });
     }
+    if (String(password).length < 12) {
+      return res.status(400).json({ error: 'Password must be at least 12 characters.' });
+    }
 
     const allowedRoles = ['customer', 'bus_owner'];
     if (!allowedRoles.includes(role)) {
@@ -48,6 +51,33 @@ router.post('/register', async (req, res) => {
   }
 });
 
+function phoneKey(value) {
+  return String(value || '').replace(/\D/g, '').replace(/^678/, '');
+}
+
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { username, phone, new_password: newPassword } = req.body;
+    if (!username || !phone || !newPassword) {
+      return res.status(400).json({ error: 'Username, mobile number, and a new password are required.' });
+    }
+    if (String(newPassword).length < 12) {
+      return res.status(400).json({ error: 'Password must be at least 12 characters.' });
+    }
+    const result = await pool.query('SELECT id, phone, active FROM users WHERE username = $1', [username]);
+    const user = result.rows[0];
+    const matches = user && user.active !== false && user.phone && phoneKey(user.phone) === phoneKey(phone);
+    if (!matches) {
+      return res.status(400).json({ error: 'Account could not be reset. Check the username and the mobile number on the account, or contact Innovatel Hub Solutions Limited.' });
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query('UPDATE users SET password_hash = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2', [hashedPassword, user.id]);
+    res.json({ message: 'Password updated. You can log in.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Login
 router.post('/login', async (req, res) => {
   try {
@@ -64,6 +94,9 @@ router.post('/login', async (req, res) => {
     }
 
     const user = result.rows[0];
+    if (user.active === false) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
 
     if (!isValidPassword) {

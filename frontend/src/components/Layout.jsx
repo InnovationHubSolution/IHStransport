@@ -23,11 +23,12 @@ const Layout = () => {
     { path: '/fare', label: 'Bus fare', icon: '🎫' },
     { path: '/customers', label: 'Customers', icon: '👤' },
     { path: '/reports', label: 'Reports', icon: '📈' },
+    { path: '/settlements', label: 'Settlements', icon: '🏦' },
     { path: '/settings', label: 'Settings', icon: '⚙️' }
   ].filter(item => {
     // Filter menu based on user role
     if (user?.role === 'bus_owner') {
-      return ['/', '/transport', '/transport-map', '/reports', '/devices'].includes(item.path);
+      return ['/', '/transport', '/transport-map', '/reports', '/settlements', '/devices'].includes(item.path);
     }
     if (user?.role === 'agent') {
       return ['/', '/cards', '/payments'].includes(item.path);
@@ -243,7 +244,7 @@ const Layout = () => {
               WebkitTextFillColor: 'transparent',
               margin: 0
             }}>
-              IHS Transport System
+              Vanuatu Smart Transit
             </h2>
             <div style={{
               display: 'flex',

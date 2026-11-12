@@ -66,14 +66,14 @@ npm install
 # Copy environment file
 cp .env.example .env
 
-# Edit .env file with your database credentials and MyCash API details
+# Edit .env file with your database credentials and M-Vatu API details
 nano .env  # or use your preferred editor
 ```
 
 Update the `.env` file with:
 - Database credentials
 - JWT secret (generate a random string)
-- MyCash API credentials (provided by Digicel)
+- M-Vatu API credentials (provided by Vodafone)
 
 ## Step 4: Run Database Migrations
 
@@ -84,7 +84,7 @@ npm run migrate
 
 This will:
 - Create all database tables
-- Create a default admin user (username: `admin`, password: `admin123`)
+- Create the first admin with `ADMIN_INITIAL_PASSWORD` set in the environment. Do not use a password from documentation.
 - Create default fare configuration
 
 **⚠️ IMPORTANT: Change the default admin password after first login!**
@@ -123,7 +123,7 @@ The frontend will run on `http://localhost:3000`
 1. Open your browser and navigate to: `http://localhost:3000`
 2. Login with:
    - Username: `admin`
-   - Password: `admin123`
+   - Password: set with `ADMIN_INITIAL_PASSWORD`, not written in this file
 3. **Change the admin password immediately!**
 
 ## API Endpoints
@@ -138,7 +138,7 @@ The backend API provides the following endpoints:
 - `POST /api/cards` - Create new card
 - `GET /api/cards/:cardUid` - Get card by UID
 
-- `POST /api/payments/topup/initiate` - Initiate MyCash top-up
+- `POST /api/payments/topup/initiate` - Initiate M-Vatu top-up
 - `POST /api/payments/topup/send-otp` - Send OTP for payment
 - `POST /api/payments/topup/approve` - Approve payment with OTP
 - `GET /api/payments/connection-test` - Test connection (for NFC app, e.g. to laptop; no auth)
@@ -156,7 +156,7 @@ The backend API provides the following endpoints:
 
 - `GET /api/reports/dashboard` - Dashboard statistics
 - `GET /api/reports/transactions` - Transaction reports
-- `GET /api/reports/mycash` - MyCash transaction reports
+- `GET /api/reports/mycash` - M-Vatu transaction reports
 
 ## Troubleshooting
 
@@ -169,8 +169,8 @@ The backend API provides the following endpoints:
 - Backend: Change `PORT` in `.env` file
 - Frontend: Change port in `vite.config.js`
 
-### MyCash Integration
-- Ensure MyCash API credentials are correct in `.env`
+### M-Vatu Integration
+- Ensure M-Vatu API credentials are correct in `.env`
 - Check API URL is accessible
 - Verify merchant mobile number is correct
 

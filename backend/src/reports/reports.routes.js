@@ -51,11 +51,11 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
       );
       stats.total_revenue = parseFloat(totalRevenueResult.rows[0].total);
 
-      // Pending MyCash transactions
-      const pendingMyCashResult = await pool.query(
-        "SELECT COUNT(*) as count FROM mycash_transactions WHERE status IN ('pending', 'otp_sent')"
+      // Pending M-Vatu transactions
+      const pendingMvatuResult = await pool.query(
+        "SELECT COUNT(*) as count FROM mvatu_transactions WHERE status IN ('pending', 'otp_sent')"
       );
-      stats.pending_mycash_transactions = parseInt(pendingMyCashResult.rows[0].count);
+      stats.pending_mycash_transactions = parseInt(pendingMvatuResult.rows[0].count);
     }
     // Bus owner dashboard
     else if (req.user.role === 'bus_owner') {
@@ -183,8 +183,8 @@ router.get('/transactions', authenticateToken, authorize('admin'), async (req, r
   }
 });
 
-// Get MyCash transactions report
-router.get('/mycash', authenticateToken, authorize('admin'), async (req, res) => {
+// Get M-Vatu transactions report
+router.get('/mvatu', authenticateToken, authorize('admin'), async (req, res) => {
   try {
     const { start_date, end_date, status, limit = 1000 } = req.query;
 
@@ -192,7 +192,7 @@ router.get('/mycash', authenticateToken, authorize('admin'), async (req, res) =>
       SELECT 
         mt.*,
         c.card_uid
-      FROM mycash_transactions mt
+      FROM mvatu_transactions mt
       LEFT JOIN cards c ON mt.card_id = c.id
       WHERE 1=1
     `;

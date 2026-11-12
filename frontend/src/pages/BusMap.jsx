@@ -28,6 +28,11 @@ const BusMap = () => {
     return <div>Loading fleet locations...</div>;
   }
 
+  const coordinate = (value) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  };
+
   const formatTime = (timestamp) => {
     if (!timestamp) return 'Never';
     const date = new Date(timestamp);
@@ -62,7 +67,10 @@ const BusMap = () => {
           <div className="card" style={{ marginBottom: '20px' }}>
             <h2>Active Buses ({buses.length})</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '15px' }}>
-              {buses.map((bus) => (
+              {buses.map((bus) => {
+                const latitude = coordinate(bus.last_latitude);
+                const longitude = coordinate(bus.last_longitude);
+                return (
                 <div
                   key={bus.id}
                   className="card"
@@ -82,10 +90,10 @@ const BusMap = () => {
                       {bus.status}
                     </span>
                   </div>
-                  {bus.last_latitude && bus.last_longitude ? (
+                  {latitude != null && longitude != null ? (
                     <>
                       <div style={{ fontSize: '12px', color: '#999', marginTop: '8px' }}>
-                        📍 {bus.last_latitude.toFixed(6)}, {bus.last_longitude.toFixed(6)}
+                        📍 {latitude.toFixed(6)}, {longitude.toFixed(6)}
                       </div>
                       <div style={{ fontSize: '12px', color: '#999' }}>
                         Updated: {formatTime(bus.last_location_update)}
@@ -97,15 +105,16 @@ const BusMap = () => {
                     </div>
                   )}
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
-          {selectedBus && selectedBus.last_latitude && selectedBus.last_longitude && (
+          {selectedBus && coordinate(selectedBus.last_latitude) != null && coordinate(selectedBus.last_longitude) != null && (
             <div className="card">
               <h2>📍 {selectedBus.bus_number} - Location Details</h2>
               <div style={{ marginBottom: '15px' }}>
-                <strong>Coordinates:</strong> {selectedBus.last_latitude}, {selectedBus.last_longitude}
+                <strong>Coordinates:</strong> {coordinate(selectedBus.last_latitude).toFixed(6)}, {coordinate(selectedBus.last_longitude).toFixed(6)}
               </div>
               <div style={{ marginBottom: '15px' }}>
                 <strong>Last Update:</strong> {formatTime(selectedBus.last_location_update)}

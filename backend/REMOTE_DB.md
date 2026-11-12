@@ -14,7 +14,7 @@ The backend is configured to use **PostgreSQL** on the database server at **172.
    ```bash
    npm run migrate:pg
    ```
-   This creates tables and the default admin user (admin / admin123).
+   This creates tables. Set `ADMIN_INITIAL_PASSWORD` before the first migrate if you need an admin user.
 
 3. **Start the backend**
    ```bash

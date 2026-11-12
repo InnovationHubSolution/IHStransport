@@ -4,14 +4,15 @@ import { formatVUV } from '../utils/currency';
 
 const Payments = () => {
   const [transactions, setTransactions] = useState([]);
+  const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showTopupForm, setShowTopupForm] = useState(false);
   const [topupData, setTopupData] = useState({ card_id: '', amount: '', customer_mobile: '' });
-  const [otpData, setOtpData] = useState({ request_id: '', otp: '' });
-  const [activeStep, setActiveStep] = useState(null); // 'initiate', 'otp', 'approve'
+  const [notice, setNotice] = useState('');
 
   useEffect(() => {
     fetchTransactions();
+    api.get('/cards').then((response) => setCards(response.data.cards || [])).catch(() => setCards([]));
   }, []);
 
   const fetchTransactions = async () => {
@@ -32,45 +33,25 @@ const Payments = () => {
     const code = d?.mycash_code;
     const mycashStatus = d?.mycash_status;
     if (code != null || mycashStatus) {
-      return `MyCash Error${code != null ? ` ${code}` : ''}: ${mycashStatus || msg}`;
+      return `M-Vatu Error${code != null ? ` ${code}` : ''}: ${mycashStatus || msg}`;
     }
     return status != null ? `API ${status}: ${msg}` : msg;
   }
 
   const handleInitiateTopup = async (e) => {
     e.preventDefault();
+    setNotice('');
     try {
       const response = await api.post('/payments/topup/initiate', topupData);
-      setOtpData({ ...otpData, request_id: response.data.request_id });
-      setActiveStep('otp');
-      alert('Payment request created. Please send OTP.');
-    } catch (error) {
-      alert(formatPaymentError(error));
-    }
-  };
-
-  const handleSendOTP = async () => {
-    try {
-      await api.post('/payments/topup/send-otp', { request_id: otpData.request_id });
-      setActiveStep('approve');
-      alert('OTP sent to customer mobile');
-    } catch (error) {
-      alert(formatPaymentError(error));
-    }
-  };
-
-  const handleApprovePayment = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await api.post('/payments/topup/approve', otpData);
-      alert(`Payment approved! New balance: ${formatVUV(response.data.new_balance)}`);
-      setShowTopupForm(false);
-      setActiveStep(null);
-      setTopupData({ card_id: '', amount: '', customer_mobile: '' });
-      setOtpData({ request_id: '', otp: '' });
+      setNotice(response.data.message || 'Top-up recorded.');
+      if (response.data.new_balance != null) {
+        setNotice(`Card topped up. New balance: ${formatVUV(response.data.new_balance)}`);
+        setShowTopupForm(false);
+        setTopupData({ card_id: '', amount: '', customer_mobile: '' });
+      }
       fetchTransactions();
     } catch (error) {
-      alert(formatPaymentError(error));
+      setNotice(formatPaymentError(error));
     }
   };
 
@@ -89,77 +70,46 @@ const Payments = () => {
 
       {showTopupForm && (
         <div className="card" style={{ marginBottom: '20px' }}>
-          <h2>MyCash Card Top-Up</h2>
-          
-          {activeStep === null && (
-            <form onSubmit={handleInitiateTopup}>
-              <label>Card ID</label>
-              <input
-                type="number"
-                value={topupData.card_id}
-                onChange={(e) => setTopupData({ ...topupData, card_id: e.target.value })}
-                required
-                placeholder="Card ID"
-              />
+          <h2>M-Vatu card top-up</h2>
+          <p>Choose the passenger card, the amount in VUV, and the Vodafone mobile number. An agent can do this with the customer. The fare reader still spends the card balance, not the M-Vatu wallet.</p>
+          {notice && <p style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px' }}>{notice}</p>}
+          <form onSubmit={handleInitiateTopup}>
+            <label>Card</label>
+            <select
+              value={topupData.card_id}
+              onChange={(e) => setTopupData({ ...topupData, card_id: e.target.value })}
+              required
+            >
+              <option value="">Select a card</option>
+              {cards.map((card) => (
+                <option key={card.id} value={card.id}>
+                  {card.card_uid} — {card.customer_name || 'Unassigned'} — {formatVUV(card.balance)}
+                </option>
+              ))}
+            </select>
 
-              <label>Amount (VUV)</label>
-              <input
-                type="number"
-                step="1"
-                min="0"
-                value={topupData.amount}
-                onChange={(e) => setTopupData({ ...topupData, amount: e.target.value })}
-                required
-                placeholder="e.g. 500"
-              />
+            <label>Amount (VUV)</label>
+            <input
+              type="number"
+              step="1"
+              min="1"
+              value={topupData.amount}
+              onChange={(e) => setTopupData({ ...topupData, amount: e.target.value })}
+              required
+              placeholder="e.g. 500"
+            />
 
-              <label>Customer Mobile</label>
-              <input
-                type="tel"
-                value={topupData.customer_mobile}
-                onChange={(e) => setTopupData({ ...topupData, customer_mobile: e.target.value })}
-                required
-                placeholder="Mobile number"
-              />
+            <label>Vodafone mobile</label>
+            <input
+              type="tel"
+              value={topupData.customer_mobile}
+              onChange={(e) => setTopupData({ ...topupData, customer_mobile: e.target.value })}
+              required
+              placeholder="+678"
+            />
 
-              <button type="submit" className="btn btn-primary">Initiate Payment</button>
-            </form>
-          )}
-
-          {activeStep === 'otp' && (
-            <div>
-              <p>Request ID: {otpData.request_id}</p>
-              <button className="btn btn-primary" onClick={handleSendOTP} style={{ marginRight: '10px' }}>
-                Send OTP
-              </button>
-              <button className="btn btn-secondary" onClick={() => setActiveStep('approve')}>
-                OTP Already Sent
-              </button>
-            </div>
-          )}
-
-          {activeStep === 'approve' && (
-            <form onSubmit={handleApprovePayment}>
-              <label>Request ID</label>
-              <input
-                type="text"
-                value={otpData.request_id}
-                onChange={(e) => setOtpData({ ...otpData, request_id: e.target.value })}
-                required
-              />
-
-              <label>OTP</label>
-              <input
-                type="text"
-                value={otpData.otp}
-                onChange={(e) => setOtpData({ ...otpData, otp: e.target.value })}
-                required
-                placeholder="Enter OTP"
-              />
-
-              <button type="submit" className="btn btn-primary">Approve Payment</button>
-            </form>
-          )}
+            <button type="submit" className="btn btn-primary">Record M-Vatu top-up</button>
+          </form>
         </div>
       )}
 

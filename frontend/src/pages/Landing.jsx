@@ -133,7 +133,7 @@ const Landing = () => {
             </p>
             <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link
-                to="/login"
+                to="/signup"
                 style={{
                   padding: '18px 45px',
                   background: 'white',
@@ -158,8 +158,8 @@ const Landing = () => {
               >
                 Get Started →
               </Link>
-              <Link
-                to="/signup"
+              <a
+                href="#how-it-works"
                 style={{
                   padding: '18px 45px',
                   background: 'rgba(255, 255, 255, 0.2)',
@@ -186,7 +186,7 @@ const Landing = () => {
                 }}
               >
                 Learn More
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -249,7 +249,7 @@ const Landing = () => {
             {
               icon: '📱',
               title: 'Mobile Top-Up',
-              description: 'Top up your card anytime using Digicel MyCash. Quick and secure mobile payments.',
+              description: 'Top up your card anytime using Vodafone M-Vatu. Quick and secure mobile payments.',
               color: '#7FB539'
             },
             {
@@ -370,7 +370,7 @@ const Landing = () => {
       </div>
 
       {/* How It Works Section */}
-      <div style={{
+      <div id="how-it-works" style={{
         background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
         padding: '100px 20px',
         position: 'relative',
@@ -425,10 +425,10 @@ const Landing = () => {
               gap: '40px'
             }}>
               {[
-                { step: '1', title: 'Get Your Card', desc: 'Visit an agent to purchase your prepaid NFC card', icon: '🎫' },
-                { step: '2', title: 'Top Up Balance', desc: 'Add money to your card using Digicel MyCash', icon: '💰' },
-                { step: '3', title: 'Tap & Ride', desc: 'Tap your card on the bus reader when boarding', icon: '✨' },
-                { step: '4', title: 'Track & Manage', desc: 'Monitor your balance and transactions online', icon: '📱' }
+                { step: '1', title: 'Get Your Card', desc: 'Buy a prepaid NFC card from an IHS agent. The sale price is not published in this system yet.', icon: '🎫' },
+                { step: '2', title: 'Top up with M-Vatu', desc: 'Choose your card, enter the amount in VUV and your Vodafone number. Confirm in M-Vatu. The card balance increases only after Vodafone confirms the payment.', icon: '💰' },
+                { step: '3', title: 'Tap to travel', desc: 'Tap the card on a bus, plane, or ship validator. The fare comes off the card, not the M-Vatu wallet. A low balance is declined.', icon: '✨' },
+                { step: '4', title: 'If the card is lost', desc: 'Tell an IHS agent so the card can be marked inactive. Do not keep using a card you no longer have.', icon: '📱' }
               ].map((item, index) => (
                 <div
                   key={index}
@@ -534,7 +534,7 @@ const Landing = () => {
                 color: 'white',
                 fontFamily: "'Poppins', sans-serif"
               }}>
-                🚌 For Bus Owners
+                🚌 For operators
               </h3>
             </div>
             <div style={{
@@ -543,10 +543,10 @@ const Landing = () => {
               gap: '40px'
             }}>
               {[
-                { step: '1', title: 'Register Your Fleet', desc: 'Add your buses to the system and get NFC devices', icon: '📝' },
-                { step: '2', title: 'Real-Time Tracking', desc: 'Monitor your buses with GPS tracking and location history', icon: '🗺️' },
-                { step: '3', title: 'Revenue Dashboard', desc: 'View daily, monthly, and total revenue statistics', icon: '📊' },
-                { step: '4', title: 'Settlement & Reports', desc: 'Track pending settlements and generate detailed reports', icon: '💵' }
+                { step: '1', title: 'Register your fleet', desc: 'Add buses, planes, or ships and the NFC validator for each one', icon: '📝' },
+                { step: '2', title: 'Track vehicles', desc: 'GPS updates show where each vehicle last reported', icon: '🗺️' },
+                { step: '3', title: 'Fare revenue', desc: 'Each completed tap adds the gross fare to your pending settlement', icon: '📊' },
+                { step: '4', title: 'IHS payout', desc: 'IHS settles a period at the current commission rate (5% unless an admin changes it) and pays the net by your settlement method, usually bank transfer. There is no fixed payday stored in the system.', icon: '💵' }
               ].map((item, index) => (
                 <div
                   key={index}
@@ -644,7 +644,7 @@ const Landing = () => {
             fontWeight: '800',
             fontFamily: "'Poppins', sans-serif"
           }}>
-            Trusted by Thousands
+            How top-up and payouts work
           </h2>
           <p style={{
             fontSize: '18px',
@@ -653,7 +653,7 @@ const Landing = () => {
             maxWidth: '600px',
             margin: '0 auto 60px'
           }}>
-            Join the growing community of satisfied users across Vanuatu
+            This service is in pilot. Published passenger and vehicle counts are not shown here because they are not measured on this page.
           </p>
           <div style={{
             display: 'grid',
@@ -661,10 +661,10 @@ const Landing = () => {
             gap: '50px'
           }}>
             {[
-              { number: '10,000+', label: 'Active Cards', icon: '💳', color: '#1B3A5F' },
-              { number: '500+', label: 'Buses', icon: '🚌', color: '#7FB539' },
-              { number: '50+', label: 'Routes', icon: '🗺️', color: '#FDB813' },
-              { number: '1M+', label: 'Transactions', icon: '📊', color: '#F26B65' }
+              { number: '1', label: 'Buy a card from an agent', icon: '🎫', color: '#1B3A5F' },
+              { number: '2', label: 'Top up with Vodafone M-Vatu', icon: '💰', color: '#7FB539' },
+              { number: '3', label: 'Tap on bus, plane, or ship', icon: '🚌', color: '#FDB813' },
+              { number: '4', label: 'Operators are paid after commission', icon: '🏦', color: '#F26B65' }
             ].map((stat, index) => (
               <div
                 key={index}
@@ -898,7 +898,7 @@ const Landing = () => {
             Ready to Get Started?
           </h2>
           <p style={{ fontSize: '20px', marginBottom: '30px', opacity: 0.9 }}>
-            Join thousands of commuters enjoying cashless bus travel
+            Join Vanuatu Smart Transit
           </p>
           <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link
@@ -978,7 +978,7 @@ const Landing = () => {
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
             }}>
-              IHS Cashless Transportation System
+              Vanuatu Smart Transit
             </h3>
             <p style={{
               opacity: 0.9,
@@ -1001,14 +1001,15 @@ const Landing = () => {
               color: '#94a3b8',
               marginBottom: '10px'
             }}>
-              © 2024 Innovatel Hub Solutions Limited. All rights reserved.
+              © 2026 Innovatel Hub Solutions Limited. All rights reserved.
             </p>
-            <p style={{
-              fontSize: '13px',
-              color: '#64748b',
-              marginTop: '15px'
-            }}>
-              For support, contact your local transport authority or visit an agent location.
+            <p style={{ fontSize: '13px', color: '#64748b', marginTop: '15px', lineHeight: 1.6 }}>
+              Support: an IHS agent, or Innovatel Hub Solutions Limited at <a href="https://www.innovatelhubltd.com" style={{ color: '#cbd5e1' }}>innovatelhubltd.com</a>.
+              Top-ups use Vodafone M-Vatu. Taps spend the card balance. IHS commission on operator fare payouts defaults to 5% and an admin can change it. Card sale fees are not set in this system.
+            </p>
+            <p style={{ fontSize: '13px', color: '#64748b', marginTop: '15px', lineHeight: 1.6 }}>
+              Privacy: the system stores account name, mobile number, card UID, balance, and trip location reported by a validator. It is used to run travel payments and operator settlements.
+              Terms: a lost card should be reported to an agent so it can be deactivated. A tap with insufficient balance is declined and does not create a debt on the M-Vatu wallet.
             </p>
           </div>
         </div>

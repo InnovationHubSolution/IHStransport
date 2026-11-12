@@ -31,16 +31,16 @@ async function migrate() {
     pool.exec(schema);
     console.log('✅ Schema applied');
 
-    const bcrypt = require(path.join(backendPath, 'node_modules/bcryptjs'));
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-
+    const initialPassword = process.env.ADMIN_INITIAL_PASSWORD;
     const adminCheck = await pool.query('SELECT id FROM users WHERE username = $1', ['admin']);
-    if (adminCheck.rows.length === 0) {
+    if (adminCheck.rows.length === 0 && initialPassword) {
+      const bcrypt = require(path.join(backendPath, 'node_modules/bcryptjs'));
+      const hashedPassword = await bcrypt.hash(initialPassword, 10);
       await pool.query(
         'INSERT INTO users (username, password_hash, role, full_name) VALUES ($1, $2, $3, $4)',
         ['admin', hashedPassword, 'admin', 'System Administrator']
       );
-      console.log('✅ Default admin user created (username: admin, password: admin123)');
+      console.log('✅ Admin user created from ADMIN_INITIAL_PASSWORD');
     }
 
     const fareCheck = await pool.query('SELECT id FROM fare_config LIMIT 1');
@@ -50,24 +50,6 @@ async function migrate() {
         ['Default Route', 2.50, 'bus']
       );
       console.log('✅ Default fare configuration created');
-    }
-
-    // Seed test customers (role = customer) if none exist
-    const customerCheck = await pool.query("SELECT id FROM users WHERE role = 'customer' LIMIT 1");
-    if (customerCheck.rows.length === 0) {
-      const customers = [
-        ['customer1', 'Customer One', 'customer1@example.com', '555-1000'],
-        ['customer2', 'Customer Two', 'customer2@example.com', '555-1001'],
-        ['customer', 'Customer Test', 'customer@example.com', '555-0200'],
-      ];
-      const customerPassword = await bcrypt.hash('customer123', 10);
-      for (const [username, full_name, email, phone] of customers) {
-        await pool.query(
-          'INSERT INTO users (username, password_hash, role, full_name, email, phone) VALUES ($1, $2, $3, $4, $5, $6)',
-          [username, customerPassword, 'customer', full_name, email, phone]
-        );
-      }
-      console.log('✅ Default customers created (customer1, customer2, customer — password: customer123)');
     }
 
     console.log('✅ SQLite migrations completed successfully');

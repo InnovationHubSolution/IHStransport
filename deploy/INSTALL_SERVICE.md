@@ -16,7 +16,7 @@ Then open **http://localhost:8080** in your browser. The script starts the backe
 
 - Node.js installed (e.g. `node --version` in PATH).
 - App and backend at the path used in the service (default: `/home/wantok/cashlesstransit`).
-- `.env` configured in `backend/` (DB, JWT, MyCash, etc.).
+- `.env` configured in `backend/` (DB, JWT, M-Vatu, etc.).
 - PostgreSQL running (local or remote; see REMOTE_DB.md).
 
 ## 2. Edit the service file (if needed)

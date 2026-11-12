@@ -26,7 +26,7 @@ const Settings = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const { data } = await api.get('/settings/mycash');
+        const { data } = await api.get('/settings/mvatu');
         setForm({
           apiUrl: data.apiUrl || '',
           apiKey: '', // never pre-fill secret; UI shows masked from server
@@ -51,7 +51,7 @@ const Settings = () => {
     setStatusLoading(true);
     setApiStatus(null);
     try {
-      const { data } = await api.get('/settings/mycash/status');
+      const { data } = await api.get('/settings/mvatu/status');
       setApiStatus(data);
     } catch (err) {
       setApiStatus({
@@ -84,8 +84,8 @@ const Settings = () => {
       if (form.apiKey.trim()) payload.apiKey = form.apiKey.trim();
       if (form.password.trim()) payload.password = form.password.trim();
 
-      await api.put('/settings/mycash', payload);
-      setMessage({ type: 'success', text: 'MyCash settings saved. New key/password will be used for the next top-up.' });
+      await api.put('/settings/mvatu', payload);
+      setMessage({ type: 'success', text: 'M-Vatu settings saved. New key/password will be used for the next top-up.' });
       setForm((prev) => ({ ...prev, apiKey: '', password: '' }));
       setApiStatus(null);
     } catch (err) {
@@ -105,12 +105,12 @@ const Settings = () => {
     <div>
       <h1 style={{ marginBottom: '24px' }}>Settings</h1>
       <div style={{ maxWidth: '560px', background: 'white', padding: '24px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-        <h2 style={{ marginTop: 0, marginBottom: '16px', fontSize: '18px' }}>MyCash API</h2>
-        <p style={{ color: '#666', fontSize: '14px', marginBottom: '20px' }}>
-          Update the MyCash gateway credentials here. Changes apply immediately. Leave API Key or Password blank to keep the current value.
+        <h2 style={{ marginTop: 0, marginBottom: '16px', fontSize: '18px' }}>M-Vatu API</h2>
+        <p style={{ color: '#475569', fontSize: '14px', marginBottom: '20px' }}>
+            Save the merchant details Vodafone Vanuatu gives IHS. There is no public M-Vatu HTTP API yet, so saving these values does not send a payment and does not change a card balance.
         </p>
 
-        {/* MyCash API connection status */}
+        {/* M-Vatu API connection status */}
         <div style={{ marginBottom: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
             <strong>API Status</strong>
@@ -159,20 +159,9 @@ const Settings = () => {
               )}
             </div>
           )}
-          <details style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
-            <summary style={{ cursor: 'pointer' }}>MyCash error codes (600–606)</summary>
-            <table style={{ marginTop: '8px', width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-              <tbody>
-                <tr><td><strong>600</strong></td><td>API Key Error</td></tr>
-                <tr><td><strong>601</strong></td><td>Invalid User key (User is not matching API key passed)</td></tr>
-                <tr><td><strong>602</strong></td><td>Invalid Method passed</td></tr>
-                <tr><td><strong>603</strong></td><td>MyCash Payment system error</td></tr>
-                <tr><td><strong>604</strong></td><td>Invalid Product ID</td></tr>
-                <tr><td><strong>605</strong></td><td>Mandatory parameter is empty</td></tr>
-                <tr><td><strong>606</strong></td><td>Invalid customer mobile number</td></tr>
-              </tbody>
-            </table>
-          </details>
+          <p style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
+            Digicel error codes are not used. Vodafone has not published M-Vatu merchant error codes.
+          </p>
         </div>
 
         {message && (
@@ -197,7 +186,7 @@ const Settings = () => {
               name="apiUrl"
               value={form.apiUrl}
               onChange={handleChange}
-              placeholder="https://www.gifts.digicelpacific.com/mycash"
+              placeholder="Leave blank until Vodafone issues a base URL"
               style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', boxSizing: 'border-box' }}
             />
           </div>
@@ -271,7 +260,7 @@ const Settings = () => {
               fontWeight: 500
             }}
           >
-            {saving ? 'Saving…' : 'Save MyCash settings'}
+            {saving ? 'Saving…' : 'Save M-Vatu settings'}
           </button>
         </form>
       </div>

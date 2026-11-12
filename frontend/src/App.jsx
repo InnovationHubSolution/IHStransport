@@ -6,6 +6,7 @@ import { authService } from './services/auth';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import BusOwnerDashboard from './pages/BusOwnerDashboard';
 import CustomerDashboard from './pages/CustomerDashboard';
@@ -20,6 +21,7 @@ import Customers from './pages/Customers';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import Fare from './pages/Fare';
+import Settlements from './pages/Settlements';
 import Layout from './components/Layout';
 
 const PrivateRoute = ({ children }) => {
@@ -89,6 +91,7 @@ function App() {
         <Route path="/landing" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/" element={<ProtectedLayout />}>
           <Route index element={<DashboardRouter />} />
           <Route path="cards" element={<Cards />} />
@@ -101,6 +104,7 @@ function App() {
           <Route path="devices" element={<Devices />} />
           <Route path="customers" element={<Customers />} />
           <Route path="reports" element={<Reports />} />
+          <Route path="settlements" element={<Settlements />} />
           <Route path="fare" element={<Fare />} />
           <Route path="settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />

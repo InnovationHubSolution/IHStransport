@@ -1,18 +1,18 @@
 # NFC Android App Specification (IHStransport)
 
-This document describes how the **NFC Android app** (used on the bus, at the airport, or at the boat terminal) should work so it behaves like the **IHStransport web app**: customer swipes/taps their prepaid NFC card → payment is deducted from the card balance and recorded in the same backend (transactions, settlements, MyCash flow unchanged).
+This document describes how the **NFC Android app** (used on the bus, at the airport, or at the boat terminal) should work so it behaves like the **IHStransport web app**: customer swipes/taps their prepaid NFC card → payment is deducted from the card balance and recorded in the same backend (transactions, settlements, M-Vatu flow unchanged).
 
 ---
 
 ## 1. Role of the NFC device in the system
 
 - **Where it is used:** On the bus, at the airport, or at the boat/ship terminal — anywhere the customer gets their ticket by **tapping** a prepaid NFC card.
-- **What it does:** Reads the card UID, sends a **fare payment** to the IHStransport backend. The backend deducts from the **card balance** (topped up via **MyCash** on the web/agent side) and creates a `fare_payment` transaction.
-- **MyCash:** MyCash is **not** used on the NFC device. MyCash is only for **topping up** the card (initiate → OTP → approve) via the web app or agent. The tap on the device uses the **prepaid balance** already on the card.
+- **What it does:** Reads the card UID, sends a **fare payment** to the IHStransport backend. The backend deducts from the **card balance** (topped up via **M-Vatu** on the web/agent side) and creates a `fare_payment` transaction.
+- **M-Vatu:** M-Vatu is **not** used on the NFC device. M-Vatu is only for **topping up** the card (initiate → OTP → approve) via the web app or agent. The tap on the device uses the **prepaid balance** already on the card.
 
 Flow:
 
-1. Customer tops up card via **MyCash** (web/agent) → balance updated in backend.
+1. Customer tops up card via **M-Vatu** (web/agent) → balance updated in backend.
 2. Customer taps card on **NFC device** (bus/airport/boat) → device calls backend → backend deducts fare from that balance and records transaction.
 3. Transaction appears in the same reports and settlements as in the web app.
 
@@ -150,7 +150,7 @@ If no fare is configured for that bus, return 404 or a default. The NFC app can 
 |------|-----------------------------|--------------------------|
 | 400  | Card not found              | “Card not recognised. Please use a registered card.” |
 | 400  | Card is inactive/blocked/expired/lost | “Card cannot be used.” |
-| 400  | Insufficient balance        | “Insufficient balance. Please top up via MyCash.” |
+| 400  | Insufficient balance        | “Insufficient balance. Please top up via M-Vatu.” |
 | 400  | Card UID / bus ID / fare missing | “Invalid request.” (log and fix config.) |
 | 404  | Card not found              | “Card not registered.” |
 | 5xx  | Server/network error        | “Payment unavailable. Try again.” |
@@ -159,9 +159,9 @@ If no fare is configured for that bus, return 404 or a default. The NFC app can 
 
 ## 5. Data flow summary
 
-- **Web app:** Registers cards, tops up via MyCash, manages buses and operators, views transactions and reports.
+- **Web app:** Registers cards, tops up via M-Vatu, manages buses and operators, views transactions and reports.
 - **NFC device:** Only performs **fare payment**: read card UID → POST `/api/payments/fare` → show result.
-- **MyCash:** Used only for **top-up** (web/agent). Not involved in the tap on the bus/airport/boat.
+- **M-Vatu:** Used only for **top-up** (web/agent). Not involved in the tap on the bus/airport/boat.
 
 So: the NFC app “works like” the web app in the sense that every tap is the same **fare payment** the web app expects: same API, same `transactions` table, same balance and settlements; the only difference is the **client** (Android NFC device instead of browser).
 
@@ -170,7 +170,7 @@ So: the NFC app “works like” the web app in the sense that every tap is the 
 ## 6. Security and deployment notes
 
 - Use **HTTPS** only for the API base URL.
-- Do not store MyCash credentials on the NFC device; they are only used on the backend.
+- Do not store M-Vatu credentials on the NFC device; they are only used on the backend.
 - In the web app, assign each physical device a **Bus ID** and optional **Device ID** so transactions are attributed to the correct vehicle/terminal.
 - Fare amount can be enforced server-side in a future version; currently the backend trusts `fare_amount` from the client (device/route-specific config recommended).
 

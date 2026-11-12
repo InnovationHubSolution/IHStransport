@@ -7,7 +7,7 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -124,7 +124,7 @@ const Login = () => {
               fontSize: '15px',
               fontWeight: '500'
             }}>
-              Login to IHS Transport System
+              Login to Vanuatu Smart Transit
             </p>
           </div>
 
@@ -190,7 +190,7 @@ const Login = () => {
                 <span>🔒</span> Password
               </label>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -198,9 +198,14 @@ const Login = () => {
                 style={{
                   padding: '14px 16px',
                   fontSize: '15px',
-                  borderRadius: '12px'
+                  borderRadius: '12px',
+                  width: '100%'
                 }}
               />
+              <label style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '8px', color: '#475569', fontSize: '13px' }}>
+                <input type="checkbox" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} />
+                Show password
+              </label>
             </div>
 
             <button
@@ -265,114 +270,10 @@ const Login = () => {
             >
               Sign up here
             </Link>
-          </div>
-
-          {/* Test Accounts */}
-          <div style={{
-            marginTop: '24px',
-            padding: '20px',
-            background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-            borderRadius: '12px',
-            fontSize: '13px',
-            color: '#475569',
-            border: '2px solid #e2e8f0'
-          }}>
-            <div style={{
-              fontWeight: '700',
-              marginBottom: '12px',
-              color: '#1e293b',
-              fontSize: '14px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <span style={{ fontSize: '18px' }}>🔑</span> Test Accounts
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '16px' }}>👤</span>
-                <span style={{ fontWeight: '600', minWidth: '90px' }}>Admin:</span>
-                <code style={{
-                  background: 'white',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  fontWeight: '600',
-                  fontSize: '12px',
-                  border: '1px solid #cbd5e1'
-                }}>admin</code>
-                <span style={{ color: '#94a3b8' }}>/</span>
-                <code style={{
-                  background: 'white',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  fontWeight: '600',
-                  fontSize: '12px',
-                  border: '1px solid #cbd5e1'
-                }}>admin123</code>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '16px' }}>🚌</span>
-                <span style={{ fontWeight: '600', minWidth: '90px' }}>Bus Owner:</span>
-                <code style={{
-                  background: 'white',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  fontWeight: '600',
-                  fontSize: '12px',
-                  border: '1px solid #cbd5e1'
-                }}>busowner</code>
-                <span style={{ color: '#94a3b8' }}>/</span>
-                <code style={{
-                  background: 'white',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  fontWeight: '600',
-                  fontSize: '12px',
-                  border: '1px solid #cbd5e1'
-                }}>owner123</code>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '16px' }}>👥</span>
-                <span style={{ fontWeight: '600', minWidth: '90px' }}>Customer:</span>
-                <code style={{
-                  background: 'white',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  fontWeight: '600',
-                  fontSize: '12px',
-                  border: '1px solid #cbd5e1'
-                }}>customer</code>
-                <span style={{ color: '#94a3b8' }}>/</span>
-                <code style={{
-                  background: 'white',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  fontWeight: '600',
-                  fontSize: '12px',
-                  border: '1px solid #cbd5e1'
-                }}>customer123</code>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '16px' }}>🤝</span>
-                <span style={{ fontWeight: '600', minWidth: '90px' }}>Agent:</span>
-                <code style={{
-                  background: 'white',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  fontWeight: '600',
-                  fontSize: '12px',
-                  border: '1px solid #cbd5e1'
-                }}>agent</code>
-                <span style={{ color: '#94a3b8' }}>/</span>
-                <code style={{
-                  background: 'white',
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  fontWeight: '600',
-                  fontSize: '12px',
-                  border: '1px solid #cbd5e1'
-                }}>agent123</code>
-              </div>
+            <div style={{ marginTop: '12px' }}>
+              <Link to="/forgot-password" style={{ color: '#7FB539', fontWeight: '700', textDecoration: 'none' }}>
+                Forgot password
+              </Link>
             </div>
           </div>
         </div>

@@ -6,17 +6,17 @@ Summary of changes to the Cashless Transit web app (React frontend and Node/Expr
 
 ## Backend
 
-### MyCash & Settings
-- **MyCash base URL** – Default API URL set to `https://www.gifts.digicelpacific.com/mycash`; optional `MYCASH_PRODUCT_ID` (e.g. 373) in config and payment request body.
-- **Admin-editable MyCash credentials** – Stored in `system_settings` (DB). Config is read from DB first, then env.
+### M-Vatu & Settings
+- **M-Vatu** – Digicel MyCash calls were removed. Vodafone has not published a merchant HTTP API; see `docs/MVATU_INTEGRATION.md`. Saved settings use `mvatu_*` keys.
+- **Admin-editable M-Vatu credentials** – Stored in `system_settings` (DB). Config is read from DB first, then env.
 - **New routes**
-  - `GET /api/settings/mycash` – Get MyCash settings (admin only; secrets masked).
-  - `PUT /api/settings/mycash` – Update MyCash settings (admin only).
-  - `GET /api/settings/mycash/status` – Check MyCash API connection (admin only).
-- **Config** – `backend/src/config/mycash-loader.js` loads MyCash config from DB + env for all payment calls.
+  - `GET /api/settings/mycash` – Get M-Vatu settings (admin only; secrets masked).
+  - `PUT /api/settings/mycash` – Update M-Vatu settings (admin only).
+  - `GET /api/settings/mycash/status` – Check M-Vatu API connection (admin only).
+- **Config** – `backend/src/config/mycash-loader.js` loads M-Vatu config from DB + env for all payment calls.
 
-### MyCash Errors & Status
-- **Error codes 600–606** – `backend/src/payments/mycash-errors.js` maps MyCash codes to messages (API Key, Invalid User, Invalid Method, Payment error, Invalid Product ID, Mandatory parameter empty, Invalid customer mobile).
+### M-Vatu Errors & Status
+- **Error codes 600–606** – `backend/src/payments/mycash-errors.js` maps M-Vatu codes to messages (API Key, Invalid User, Invalid Method, Payment error, Invalid Product ID, Mandatory parameter empty, Invalid customer mobile).
 - **Payment routes** – Top-up initiate/send-otp/approve error responses include `mycash_code` and `mycash_status` when the gateway returns an error.
 - **Status endpoint** – Returns `connected: true` or `connected: false` with `code` and `message` (and optional `mycash_status`).
 
@@ -43,8 +43,8 @@ Summary of changes to the Cashless Transit web app (React frontend and Node/Expr
 
 ### Settings (Admin only)
 - **New page** – `/settings` (sidebar only for admin).
-- **MyCash form** – Edit API URL, API Key, Username, Password, Merchant Mobile, Product ID (key/password optional to keep current).
-- **API status** – “Check connection” calls `/api/settings/mycash/status`; shows “Connected” or “Error &lt;code&gt;” and message; expandable list of MyCash error codes 600–606.
+- **M-Vatu form** – Edit API URL, API Key, Username, Password, Merchant Mobile, Product ID (key/password optional to keep current).
+- **API status** – “Check connection” calls `/api/settings/mycash/status`; shows “Connected” or “Error &lt;code&gt;” and message; expandable list of M-Vatu error codes 600–606.
 - **Errors** – Load/save errors show “API &lt;status&gt;: &lt;message&gt;”.
 
 ### Fleet (Buses)
@@ -65,7 +65,7 @@ Summary of changes to the Cashless Transit web app (React frontend and Node/Expr
 
 ### Dashboards & Errors
 - **Dashboard, BusOwnerDashboard, AgentDashboard** – On API failure, show red box: “API Error (status)” and server message; Dashboard suggests running `npm run migrate` if needed.
-- **Payments** – Initiate/Send OTP/Approve errors show “MyCash Error &lt;code&gt;: &lt;description&gt;” when backend sends `mycash_code`/`mycash_status`.
+- **Payments** – Initiate/Send OTP/Approve errors show “M-Vatu Error &lt;code&gt;: &lt;description&gt;” when backend sends `mycash_code`/`mycash_status`.
 
 ### Signup
 - **Account type** – Dropdown only “Customer” and “Bus Owner (Operator)”; Agent removed.
@@ -74,7 +74,7 @@ Summary of changes to the Cashless Transit web app (React frontend and Node/Expr
 
 ## Database
 
-- **system_settings** – Key/value table for admin settings (e.g. MyCash credentials).
+- **system_settings** – Key/value table for admin settings (e.g. M-Vatu credentials).
 - **buses** – Column `transport_type` (default `'bus'`).
 - **fare_config** – Column `transport_type` (default `'bus'`).
 - **Migration** – `npm run migrate` adds `transport_type` to existing DBs.
@@ -92,9 +92,9 @@ Summary of changes to the Cashless Transit web app (React frontend and Node/Expr
 
 | Method | Path | Purpose |
 |--------|------|---------|
-| GET | `/api/settings/mycash` | Get MyCash settings (admin, masked) |
-| PUT | `/api/settings/mycash` | Update MyCash settings (admin) |
-| GET | `/api/settings/mycash/status` | MyCash connection check (admin) |
+| GET | `/api/settings/mycash` | Get M-Vatu settings (admin, masked) |
+| PUT | `/api/settings/mycash` | Update M-Vatu settings (admin) |
+| GET | `/api/settings/mycash/status` | M-Vatu connection check (admin) |
 | POST | `/api/auth/register` | Signup; body `role` only `customer` or `bus_owner` |
 | GET | `/api/buses` | Returns `transport_type` per vehicle |
 | POST | `/api/buses` | Body may include `transport_type` |

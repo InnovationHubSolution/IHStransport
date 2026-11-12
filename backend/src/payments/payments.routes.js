@@ -16,7 +16,7 @@ router.get('/connection-test', async (req, res) => {
   });
 });
 
-// Initiate MyCash top-up
+// Initiate M-Vatu top-up
 router.post('/topup/initiate', authenticateToken, async (req, res) => {
   try {
     const { card_id, amount, customer_mobile } = req.body;
@@ -37,31 +37,44 @@ router.post('/topup/initiate', authenticateToken, async (req, res) => {
 
     const orderId = `TOPUP-${uuidv4()}`;
 
-    // Create MyCash transaction record
+    // Create M-Vatu transaction record
     const transactionResult = await pool.query(
-      'INSERT INTO mycash_transactions (order_id, card_id, customer_mobile, amount, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      'INSERT INTO mvatu_transactions (order_id, card_id, customer_mobile, amount, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [orderId, card_id, customer_mobile, amount, 'pending']
     );
 
-    // Initiate payment request with MyCash
-    const paymentRequest = await mycashService.paymentRequest(
-      orderId,
-      amount,
-      customer_mobile,
-      `Top-up card ${cardResult.rows[0].card_uid}`
-    );
-
-    // Update transaction with request_id
-    await pool.query(
-      'UPDATE mycash_transactions SET request_id = $1 WHERE order_id = $2',
-      [paymentRequest.requestId, orderId]
-    );
-
-    res.json({
-      order_id: orderId,
-      request_id: paymentRequest.requestId,
-      message: 'Payment request created. Please send OTP to complete the transaction.'
-    });
+    try {
+      const paymentRequest = await mycashService.beginTopUp({
+        orderId,
+        amount,
+        customerMobile: customer_mobile,
+        cardUid: cardResult.rows[0].card_uid
+      });
+      await pool.query(
+        'UPDATE mvatu_transactions SET request_id = $1 WHERE order_id = $2',
+        [paymentRequest.requestId, orderId]
+      );
+      return res.json({
+        order_id: orderId,
+        request_id: paymentRequest.requestId,
+        message: 'M-Vatu accepted the payment request.'
+      });
+    } catch (providerError) {
+      if (providerError.code === 'mvatu_not_configured') {
+        return res.status(202).json({
+          order_id: orderId,
+          status: 'pending',
+          configured: false,
+          code: providerError.code,
+          message: providerError.message
+        });
+      }
+      await pool.query(
+        'UPDATE mvatu_transactions SET status = $1, error_message = $2 WHERE order_id = $3',
+        ['failed', providerError.message, orderId]
+      );
+      throw providerError;
+    }
   } catch (error) {
     const status = 500;
     res.status(status).json({
@@ -73,7 +86,7 @@ router.post('/topup/initiate', authenticateToken, async (req, res) => {
   }
 });
 
-// Send OTP for MyCash payment
+// Send OTP for M-Vatu payment
 router.post('/topup/send-otp', authenticateToken, async (req, res) => {
   try {
     const { request_id } = req.body;
@@ -84,7 +97,7 @@ router.post('/topup/send-otp', authenticateToken, async (req, res) => {
 
     // Get transaction
     const transactionResult = await pool.query(
-      'SELECT * FROM mycash_transactions WHERE request_id = $1',
+      'SELECT * FROM mvatu_transactions WHERE request_id = $1',
       [request_id]
     );
 
@@ -98,12 +111,12 @@ router.post('/topup/send-otp', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'Transaction is not in pending status' });
     }
 
-    // Send OTP via MyCash
+    // Send OTP via M-Vatu
     const otpResponse = await mycashService.sendOTP(request_id);
 
     // Update transaction status
     await pool.query(
-      'UPDATE mycash_transactions SET status = $1, otp_sent_at = CURRENT_TIMESTAMP WHERE request_id = $2',
+      'UPDATE mvatu_transactions SET status = $1, otp_sent_at = CURRENT_TIMESTAMP WHERE request_id = $2',
       ['otp_sent', request_id]
     );
 
@@ -122,7 +135,7 @@ router.post('/topup/send-otp', authenticateToken, async (req, res) => {
   }
 });
 
-// Approve MyCash payment with OTP
+// Approve M-Vatu payment with OTP
 router.post('/topup/approve', authenticateToken, async (req, res) => {
   try {
     const { request_id, otp } = req.body;
@@ -133,7 +146,7 @@ router.post('/topup/approve', authenticateToken, async (req, res) => {
 
     // Get transaction
     const transactionResult = await pool.query(
-      'SELECT * FROM mycash_transactions WHERE request_id = $1',
+      'SELECT * FROM mvatu_transactions WHERE request_id = $1',
       [request_id]
     );
 
@@ -147,7 +160,7 @@ router.post('/topup/approve', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'OTP must be sent first' });
     }
 
-    // Approve payment with MyCash
+    // Approve payment with M-Vatu
     const approvalResponse = await mycashService.approvePayment(request_id, otp);
 
     if (approvalResponse.status === 'approved') {
@@ -172,9 +185,9 @@ router.post('/topup/approve', authenticateToken, async (req, res) => {
           [transaction.card_id, transaction.amount, 0, currentBalance, newBalance, 'top_up', 'completed']
         );
 
-        // Update MyCash transaction
+        // Update M-Vatu transaction
         await pool.query(
-          'UPDATE mycash_transactions SET status = $1, transaction_id = $2, reference_number = $3, approved_at = CURRENT_TIMESTAMP WHERE request_id = $4',
+          'UPDATE mvatu_transactions SET status = $1, transaction_id = $2, reference_number = $3, approved_at = CURRENT_TIMESTAMP WHERE request_id = $4',
           ['approved', approvalResponse.transactionId, approvalResponse.referenceNumber, request_id]
         );
 
@@ -193,7 +206,7 @@ router.post('/topup/approve', authenticateToken, async (req, res) => {
     } else {
       // Payment failed
       await pool.query(
-        'UPDATE mycash_transactions SET status = $1, error_message = $2 WHERE request_id = $3',
+        'UPDATE mvatu_transactions SET status = $1, error_message = $2 WHERE request_id = $3',
         ['failed', approvalResponse.message || 'Payment approval failed', request_id]
       );
 
@@ -482,6 +495,16 @@ router.post('/fare', async (req, res) => {
           [bus_id, latitude, longitude, location_accuracy || null]
         );
       }
+
+      // Accrue gross fare to the operator. Commission is calculated when IHS settles.
+      await pool.query(
+        `UPDATE bus_owners
+         SET pending_settlement = COALESCE(pending_settlement, 0) + $1,
+             total_revenue = COALESCE(total_revenue, 0) + $1,
+             updated_at = CURRENT_TIMESTAMP
+         WHERE id = (SELECT bus_owner_id FROM buses WHERE id = $2)`,
+        [fareNum, bus_id]
+      );
 
       await pool.query('COMMIT');
 

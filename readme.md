@@ -1,92 +1,129 @@
-Below is a **clean, professional `README.md`** you can use directly in your repository.
-It is written for **developers, partners, and regulators**, and explains **how to build the full web app** for the bus cashless system with **MyCash integration**.
+# IHStransport
 
-You can copy-paste this as is.
+# Cashless Transit (Web App)
 
----
-
-```markdown
-# Bus Cashless Card Payment System (Web App)
-
-A web-based platform for managing a **cashless bus transport system** using **NFC prepaid cards** and **Digicel MyCash** for payments and top-ups.
+A web-based platform for **cashless travel** on **buses, planes, and ships** using **NFC prepaid cards** and **Vodafone M-Vatu** for payments and top-ups. All amounts are in **VUV** (Vanuatu Vatu).
 
 This system supports:
 - Card provisioning and management
-- MyCash-based card top-ups
-- Bus owner and bus management
+- M-Vatu-based card top-ups
+- Multi-mode fleet (bus, plane, ship) and operator management
 - Transaction processing (online & offline sync)
 - Reporting and settlements
 
 ---
 
-## 1. System Overview
+## Quick Start
 
-The platform enables passengers to pay bus fares using NFC cards while allowing:
-- Customers to top up cards using **Digicel MyCash**
-- Bus owners to track revenue
+See [INSTALLATION.md](./INSTALLATION.md) for detailed setup instructions.
+
+### Quick Setup:
+
+```bash
+# 1. Install PostgreSQL and create database
+sudo -u postgres psql
+CREATE DATABASE bus_cashless;
+CREATE USER bus_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE bus_cashless TO bus_user;
+\q
+
+# 2. Setup Backend
+cd backend
+npm install
+cp .env.example .env
+# Edit .env with your database credentials
+npm run migrate
+npm run dev
+
+# 3. Setup Frontend (new terminal)
+cd frontend
+npm install
+npm run dev
+
+# 4. Access the app
+# Open http://localhost:3000
+# Login: use the administrator account. Passwords are not stored in this repository.
+```
+
+---
+
+## System Overview
+
+The platform enables passengers to pay for bus, plane, and ship travel using one NFC card, while allowing:
+- Customers to top up cards using **Vodafone M-Vatu**
+- Operators to track revenue across their fleet
 - Administrators to control fares, cards, and settlements
 
 ### Key Components
-- Web Admin Portal
-- Backend API
-- Database
-- NFC Bus Devices (Android-based)
-- MyCash e-Commerce API
+- Web Admin Portal (React.js)
+- Backend API (Node.js/Express)
+- PostgreSQL Database
+- NFC devices (Android app - see `NFC-app/` folder)
+- M-Vatu e-Commerce API Integration
 
 ---
 
-## 2. Technology Stack
+## Technology Stack
 
 ### Backend
-- Node.js (Express / NestJS) or Python (FastAPI / Django)
+- Node.js with Express.js
+- PostgreSQL database
+- JWT authentication
 - REST API
-- HTTPS only
 
-### Database
-- PostgreSQL (recommended)
-- Redis (optional, for caching)
-
-### Frontend (Web App)
-- React.js / Vue.js
-- Admin & Agent dashboards
+### Frontend
+- React.js with Vite
+- React Router
+- Axios for API calls
 
 ### Payment Integration
-- Digicel MyCash e-Commerce API (OTP-based)
+- Vodafone M-Vatu e-Commerce API (OTP-based)
 
 ---
 
-## 3. Project Structure
+## Project Structure
 
 ```
-
 bus-cashless-system/
 │
 ├── backend/
 │   ├── src/
-│   │   ├── auth/
-│   │   ├── cards/
-│   │   ├── payments/
-│   │   ├── buses/
-│   │   ├── owners/
-│   │   └── reports/
-│   ├── app.js
-│   └── .env
+│   │   ├── auth/          # Authentication routes
+│   │   ├── cards/         # Card management
+│   │   ├── payments/      # Payment processing & M-Vatu integration
+│   │   ├── buses/         # Bus management
+│   │   ├── owners/        # Bus owner management
+│   │   ├── reports/       # Reporting endpoints
+│   │   ├── middleware/    # Auth middleware
+│   │   ├── config/        # Configuration files
+│   │   └── app.js         # Main application file
+│   ├── package.json
+│   └── .env.example
 │
 ├── frontend/
 │   ├── src/
-│   ├── public/
-│   └── package.json
+│   │   ├── components/    # React components
+│   │   ├── pages/         # Page components
+│   │   ├── services/      # API services
+│   │   └── App.jsx        # Main app component
+│   ├── package.json
+│   └── vite.config.js
 │
 ├── database/
-│   └── schema.sql
+│   ├── schema.sql         # Database schema
+│   └── migrate.js         # Migration script
 │
-└── README.md
-
+├── NFC-app/               # Android app for NFC devices on buses
+│   ├── README.md          # NFC app documentation
+│   └── API_INTEGRATION.md # API integration guide
+│
+├── README.md
+└── INSTALLATION.md
 ```
 
 ---
 
-## 4. Core Features
+## Core Features
 
 ### Admin
 - Manage cards and balances
@@ -102,146 +139,71 @@ bus-cashless-system/
 
 ### Agents
 - Sell cards
-- Assist MyCash top-ups
+- Assist M-Vatu top-ups
 
 ### Customers
 - Buy prepaid cards
-- Top up cards via MyCash
+- Top up cards via M-Vatu
 - Use cards on buses
 
 ---
 
-## 5. Database Design (High Level)
+## M-Vatu Integration Flow
 
-### Cards
-```
-
-cards
-
-* id
-* card_uid
-* balance
-* status
-* created_at
-
-```
-
-### MyCash Transactions
-```
-
-mycash_transactions
-
-* id
-* order_id
-* request_id
-* transaction_id
-* reference_number
-* customer_mobile
-* amount
-* status
-* created_at
-
-```
-
-### Bus Owners
-```
-
-bus_owners
-
-* id
-* name
-* phone
-* settlement_method
-
-```
-
----
-
-## 6. MyCash Integration Flow
-
-MyCash uses a **3-step OTP-based payment process**:
+M-Vatu uses a **3-step OTP-based payment process**:
 
 1. `paymentRequest` – create transaction
 2. `sendOTP` – send OTP to customer
 3. `approvePayment` – confirm payment
 
 ### Card Top-Up Flow
-```
-
-Customer → MyCash → Backend → Card Wallet → Confirmation
 
 ```
+Customer → M-Vatu → Backend → Card Wallet → Confirmation
+```
 
-⚠️ MyCash is **not used for direct tap payments on the bus** (OTP is required).
+⚠️ M-Vatu is **not used for direct tap payments on the bus** (OTP is required).
 
 ---
 
-## 7. Environment Configuration
+## Environment Configuration
 
 Create a `.env` file in `backend/`:
 
-```
-
+```env
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=bus_cashless
-DB_USER=postgres
+DB_USER=bus_user
 DB_PASSWORD=********
 
-MYCASH_API_URL=https://<provided-by-digicel>
+PORT=3001
+NODE_ENV=development
+JWT_SECRET=your_jwt_secret_key_here
+
+MYCASH_API_URL=https://<provided-by-vodafone>
 MYCASH_API_KEY=********
 MYCASH_USERNAME=********
 MYCASH_PASSWORD=********
 MYCASH_MERCHANT_MOBILE=********
-
-````
-
----
-
-## 8. Backend Setup
-
-```bash
-cd backend
-npm install
-npm run migrate
-npm run dev
-````
-
-or (Python):
-
-```bash
-pip install -r requirements.txt
-uvicorn main:app --reload
 ```
 
 ---
 
-## 9. Frontend Setup
+## Security Considerations
 
-```bash
-cd frontend
-npm install
-npm start
-```
-
-The web app will connect to the backend API via HTTPS.
-
----
-
-## 10. Security Considerations
-
-* MyCash credentials must **never** be exposed to frontend
-* All MyCash API calls must be server-side
-* Use HTTPS only
+* M-Vatu credentials must **never** be exposed to frontend
+* All M-Vatu API calls must be server-side
+* Use HTTPS only in production
 * Log all payment transactions
 * Prevent duplicate order IDs
+* Change default admin password
 
 ---
 
-## 11. Offline Bus Payments (Important)
+## Offline Bus Payments
 
 Bus NFC devices:
-
 * Deduct fare locally
 * Store transactions offline
 * Sync with backend when internet is available
@@ -250,43 +212,70 @@ The web app handles **reconciliation**.
 
 ---
 
-## 12. Deployment
+## API Documentation
 
-Recommended:
+### Authentication
+- `POST /api/auth/login` - Login
+- `POST /api/auth/register` - Register new user
+- `GET /api/auth/me` - Get current user
 
-* Backend: VPS / Cloud server
-* Database: Managed PostgreSQL
-* Frontend: Nginx / Cloud hosting
+### Cards
+- `GET /api/cards` - List cards
+- `POST /api/cards` - Create card
+- `GET /api/cards/:cardUid` - Get card details
+- `PATCH /api/cards/:id/balance` - Update balance
+- `PATCH /api/cards/:id/status` - Update status
+
+### Payments
+- `POST /api/payments/topup/initiate` - Initiate M-Vatu top-up
+- `POST /api/payments/topup/send-otp` - Send OTP
+- `POST /api/payments/topup/approve` - Approve payment
+- `POST /api/payments/fare` - Process fare payment
+- `GET /api/payments/transactions` - Transaction history
+
+### Buses
+- `GET /api/buses` - List buses
+- `POST /api/buses` - Create bus
+- `GET /api/buses/:id/revenue` - Get revenue
+
+### Bus Owners
+- `GET /api/owners` - List owners
+- `POST /api/owners` - Create owner
+- `GET /api/owners/:id/revenue` - Get revenue
+
+### Reports
+- `GET /api/reports/dashboard` - Dashboard stats
+- `GET /api/reports/transactions` - Transaction report
+- `GET /api/reports/mycash` - M-Vatu report
 
 ---
 
-## 13. Future Enhancements
+## Deployment
+
+Recommended:
+* Backend: VPS / Cloud server with PM2
+* Database: Managed PostgreSQL
+* Frontend: Nginx / Cloud hosting (Vercel, Netlify)
+
+---
+
+## Future Enhancements
 
 * Mobile app for customers
 * QR-code payments
 * Distance-based fares
 * Student / senior cards
 * Government reporting integration
+* Real-time transaction sync
 
 ---
 
-## 14. License & Compliance
+## License & Compliance
 
 This system must comply with:
-
-* Digicel MyCash merchant terms
+* Vodafone M-Vatu merchant terms
 * Local transport regulations
 * Data protection requirements
-
----
-
-## 15. Support
-
-For integration support:
-
-* Backend team
-* Digicel MyCash integration team
-* System administrator
 
 ---
 
@@ -294,16 +283,11 @@ For integration support:
 
 🚧 Initial Development / Pilot Phase
 
-```
-
 ---
 
-If you want, next I can:
-- 🔧 Convert this into **developer + operator documentation**
-- 📊 Add **sequence diagrams**
-- 🧱 Generate **SQL schema**
-- 🧪 Write **API examples (MyCash requests)**
-- 📄 Prepare **proposal for Digicel or government**
+## Support
 
-Just tell me what you want next.
-```
+For integration support:
+* Backend team
+* Vodafone M-Vatu integration team
+* System administrator

@@ -37,6 +37,15 @@ async function migrate() {
     } catch (e) {
       console.warn('GPS support (optional):', e.message);
     }
+    try {
+      const mvatuPath = path.join(__dirname, 'migrations', '2026_mvatu_settlements.sql');
+      if (fs.existsSync(mvatuPath)) {
+        await pool.query(fs.readFileSync(mvatuPath, 'utf8'));
+        console.log('✅ M-Vatu and settlement migration applied');
+      }
+    } catch (e) {
+      console.warn('M-Vatu settlement migration:', e.message);
+    }
     // Add transport_type to existing tables (bus, plane, ship)
     try {
       await pool.query(`ALTER TABLE buses ADD COLUMN IF NOT EXISTS transport_type VARCHAR(20) DEFAULT 'bus'`);
@@ -58,17 +67,19 @@ async function migrate() {
     }
     console.log('✅ Database migrations completed successfully!');
     
-    // Create default admin user (password: admin123 - should be changed in production)
-    const bcrypt = require(path.join(backendPath, 'node_modules/bcryptjs'));
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-    
+    // Create the first admin only when an initial password is supplied outside the repo.
+    const initialPassword = process.env.ADMIN_INITIAL_PASSWORD;
     const adminCheck = await pool.query('SELECT id FROM users WHERE username = $1', ['admin']);
-    if (adminCheck.rows.length === 0) {
+    if (adminCheck.rows.length === 0 && initialPassword) {
+      const bcrypt = require(path.join(backendPath, 'node_modules/bcryptjs'));
+      const hashedPassword = await bcrypt.hash(initialPassword, 10);
       await pool.query(
         'INSERT INTO users (username, password_hash, role, full_name) VALUES ($1, $2, $3, $4)',
         ['admin', hashedPassword, 'admin', 'System Administrator']
       );
-      console.log('✅ Default admin user created (username: admin, password: admin123)');
+      console.log('✅ Admin user created from ADMIN_INITIAL_PASSWORD');
+    } else if (adminCheck.rows.length === 0) {
+      console.log('No admin user exists. Set ADMIN_INITIAL_PASSWORD and run migrate again.');
     }
     
     // Create default fare configuration

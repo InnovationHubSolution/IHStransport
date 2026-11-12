@@ -36,7 +36,7 @@ For local development and testing you can use **SQLite** instead of PostgreSQL. 
 3. **Default login**
 
    - Username: `admin`  
-   - Password: `admin123`  
+   - Password: set with `ADMIN_INITIAL_PASSWORD`  
    (Same as PostgreSQL migration; change in production.)
 
 ## 2. Optional: custom SQLite path

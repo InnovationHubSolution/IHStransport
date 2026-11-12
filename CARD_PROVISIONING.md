@@ -23,7 +23,7 @@
    ↓
 3. Card is activated and ready to use
    ↓
-4. Customer can top up via MyCash
+4. Customer can top up via M-Vatu
 ```
 
 ## Database Schema

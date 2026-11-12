@@ -1,17 +1,17 @@
-// MyCash API error codes (from Digicel gateway)
+// M-Vatu API error codes (from the Vodafone M-Vatu gateway)
 const MYCASH_ERROR_CODES = {
   600: 'API Key Error',
   601: 'Invalid User key (User is not matching API key passed)',
   602: 'Invalid Method passed',
-  603: 'MyCash Payment system error',
+  603: 'M-Vatu Payment system error',
   604: 'Invalid Product ID',
   605: 'Mandatory parameter is empty',
   606: 'Invalid customer mobile number'
 };
 
 function getMycashMessage(code, rawMessage) {
-  const description = MYCASH_ERROR_CODES[code] || rawMessage || 'Unknown MyCash error';
-  return code != null ? `${code}: ${description}` : (rawMessage || 'MyCash request failed');
+  const description = MYCASH_ERROR_CODES[code] || rawMessage || 'Unknown M-Vatu error';
+  return code != null ? `${code}: ${description}` : (rawMessage || 'M-Vatu request failed');
 }
 
 function parseMycashError(axiosError) {

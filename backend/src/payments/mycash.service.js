@@ -1,106 +1,44 @@
-const axios = require('axios');
+/**
+ * Vodafone Vanuatu M-Vatu.
+ * Vodafone has not published a merchant HTTP API. This module must not call
+ * the old Digicel MyCash gateway or invent payment, OTP, or callback paths.
+ * See docs/MVATU_INTEGRATION.md.
+ */
 const { getMycashConfig } = require('../config/mycash-loader');
-const { parseMycashError, MYCASH_ERROR_CODES } = require('./mycash-errors');
 
-class MyCashService {
-  async paymentRequest(orderId, amount, customerMobile, description) {
-    const config = await getMycashConfig();
-    try {
-      const response = await axios.post(
-        `${config.apiUrl}/paymentRequest`,
-        {
-          orderId,
-          amount: amount.toString(),
-          customerMobile,
-          description: description || 'Card Top-Up',
-          merchantMobile: config.merchantMobile,
-          ...(config.productId && { productId: config.productId })
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${config.apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          auth: {
-            username: config.username,
-            password: config.password
-          }
-        }
-      );
+const NOT_CONFIGURED =
+  'Vodafone Vanuatu has not published an M-Vatu merchant API. The top-up is saved as pending and the card balance is unchanged. Customers can pay a registered M-Vatu business with *120# or the M-Vatu app, but this system cannot confirm that payment until Vodafone supplies the merchant URL, credentials, and response schema.';
 
-      return response.data;
-    } catch (error) {
-      const parsed = parseMycashError(error);
-      console.error('MyCash paymentRequest error:', error.response?.data || error.message);
-      const err = new Error(parsed.message);
-      err.mycashCode = parsed.code;
-      err.mycashStatus = MYCASH_ERROR_CODES[parsed.code] || parsed.description;
-      throw err;
-    }
+class MvatuService {
+  async getConfig() {
+    return getMycashConfig();
   }
 
-  async sendOTP(requestId) {
-    const config = await getMycashConfig();
-    try {
-      const response = await axios.post(
-        `${config.apiUrl}/sendOTP`,
-        {
-          requestId
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${config.apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          auth: {
-            username: config.username,
-            password: config.password
-          }
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      const parsed = parseMycashError(error);
-      console.error('MyCash sendOTP error:', error.response?.data || error.message);
-      const err = new Error(parsed.message);
-      err.mycashCode = parsed.code;
-      err.mycashStatus = MYCASH_ERROR_CODES[parsed.code] || parsed.description;
-      throw err;
-    }
+  async beginTopUp() {
+    const err = new Error(NOT_CONFIGURED);
+    err.code = 'mvatu_not_configured';
+    throw err;
   }
 
-  async approvePayment(requestId, otp) {
-    const config = await getMycashConfig();
-    try {
-      const response = await axios.post(
-        `${config.apiUrl}/approvePayment`,
-        {
-          requestId,
-          otp
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${config.apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          auth: {
-            username: config.username,
-            password: config.password
-          }
-        }
-      );
+  async sendOTP() {
+    return this.beginTopUp();
+  }
 
-      return response.data;
-    } catch (error) {
-      const parsed = parseMycashError(error);
-      console.error('MyCash approvePayment error:', error.response?.data || error.message);
-      const err = new Error(parsed.message);
-      err.mycashCode = parsed.code;
-      err.mycashStatus = MYCASH_ERROR_CODES[parsed.code] || parsed.description;
-      throw err;
-    }
+  async approvePayment() {
+    return this.beginTopUp();
+  }
+
+  async connectionStatus() {
+    const config = await this.getConfig();
+    const saved = Boolean(config.apiUrl || config.apiKey || config.merchantMobile);
+    return {
+      connected: false,
+      configured: false,
+      credentials_saved: saved,
+      code: 'mvatu_not_configured',
+      message: NOT_CONFIGURED
+    };
   }
 }
 
-module.exports = new MyCashService();
+module.exports = new MvatuService();

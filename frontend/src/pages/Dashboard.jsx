@@ -114,7 +114,7 @@ const Dashboard = () => {
     { title: 'Today\'s Transactions', value: stats.today_transactions, icon: '📊', gradient: 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)', color: '#14b8a6' },
     { title: 'Today\'s Revenue', value: formatVUV(stats.today_revenue), icon: '💰', gradient: 'linear-gradient(135deg, #7FB539 0%, #6a9930 100%)', color: '#7FB539' },
     { title: 'Total Revenue', value: formatVUV(stats.total_revenue), icon: '💵', gradient: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', color: '#22c55e' },
-    { title: 'Pending MyCash', value: stats.pending_mycash_transactions, icon: '⏳', gradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', color: '#ef4444' }
+    { title: 'Pending M-Vatu', value: stats.pending_mycash_transactions, icon: '⏳', gradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', color: '#ef4444' }
   ];
 
   return (
