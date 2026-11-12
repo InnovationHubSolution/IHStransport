@@ -59,7 +59,7 @@ The platform enables passengers to pay for bus, plane, and ship travel using one
 - Backend API (Node.js/Express)
 - PostgreSQL Database
 - NFC devices (Android app - see `NFC-app/` folder)
-- M-Vatu e-Commerce API Integration
+- M-Vatu top-up settings (no merchant HTTP API is published yet; see `docs/MVATU_INTEGRATION.md`)
 
 ---
 
@@ -77,7 +77,7 @@ The platform enables passengers to pay for bus, plane, and ship travel using one
 - Axios for API calls
 
 ### Payment Integration
-- Vodafone M-Vatu e-Commerce API (OTP-based)
+- Vodafone M-Vatu. Public docs cover USSD `*120#`, the M-Vatu app, and QR bill pay. There is no published merchant HTTP API, so a top-up stays pending and does not credit the card until Vodafone supplies a contract.
 
 ---
 
@@ -150,19 +150,9 @@ bus-cashless-system/
 
 ## M-Vatu Integration Flow
 
-M-Vatu uses a **3-step OTP-based payment process**:
+Passengers choose a card, an amount in VUV, and a Vodafone mobile number. The system records the request. It does not call Digicel and it does not invent a Vodafone endpoint. The card balance increases only after a configured provider returns an approved payment. Fare taps spend the card balance only.
 
-1. `paymentRequest` – create transaction
-2. `sendOTP` – send OTP to customer
-3. `approvePayment` – confirm payment
-
-### Card Top-Up Flow
-
-```
-Customer → M-Vatu → Backend → Card Wallet → Confirmation
-```
-
-⚠️ M-Vatu is **not used for direct tap payments on the bus** (OTP is required).
+See `docs/MVATU_INTEGRATION.md`.
 
 ---
 
@@ -181,11 +171,12 @@ PORT=3001
 NODE_ENV=development
 JWT_SECRET=your_jwt_secret_key_here
 
-MYCASH_API_URL=https://<provided-by-vodafone>
-MYCASH_API_KEY=********
-MYCASH_USERNAME=********
-MYCASH_PASSWORD=********
-MYCASH_MERCHANT_MOBILE=********
+MVATU_API_URL=
+MVATU_API_KEY=
+MVATU_USERNAME=
+MVATU_PASSWORD=
+MVATU_MERCHANT_MOBILE=
+MVATU_MERCHANT_CODE=
 ```
 
 ---

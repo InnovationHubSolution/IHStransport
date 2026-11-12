@@ -2,11 +2,11 @@
 
 # Cashless Transit (Web App)
 
-A web-based platform for **cashless travel** on **buses, planes, and ships** using **NFC prepaid cards** and **Digicel MyCash** for payments and top-ups. All amounts are in **VUV** (Vanuatu Vatu).
+A web-based platform for **cashless travel** on **buses, planes, and ships** using **NFC prepaid cards** and **Vodafone M-Vatu** for payments and top-ups. All amounts are in **VUV** (Vanuatu Vatu).
 
 This system supports:
 - Card provisioning and management
-- MyCash-based card top-ups
+- M-Vatu-based card top-ups
 - Multi-mode fleet (bus, plane, ship) and operator management
 - Transaction processing (online & offline sync)
 - Reporting and settlements
@@ -42,7 +42,7 @@ npm run dev
 
 # 4. Access the app
 # Open http://localhost:3000
-# Login: admin / admin123
+# Login: use the administrator account. Passwords are not stored in this repository.
 ```
 
 ---
@@ -50,7 +50,7 @@ npm run dev
 ## System Overview
 
 The platform enables passengers to pay for bus, plane, and ship travel using one NFC card, while allowing:
-- Customers to top up cards using **Digicel MyCash**
+- Customers to top up cards using **Vodafone M-Vatu**
 - Operators to track revenue across their fleet
 - Administrators to control fares, cards, and settlements
 
@@ -59,7 +59,7 @@ The platform enables passengers to pay for bus, plane, and ship travel using one
 - Backend API (Node.js/Express)
 - PostgreSQL Database
 - NFC devices (Android app - see `NFC-app/` folder)
-- MyCash e-Commerce API Integration
+- M-Vatu top-up settings (no merchant HTTP API is published yet; see `docs/MVATU_INTEGRATION.md`)
 
 ---
 
@@ -77,7 +77,7 @@ The platform enables passengers to pay for bus, plane, and ship travel using one
 - Axios for API calls
 
 ### Payment Integration
-- Digicel MyCash e-Commerce API (OTP-based)
+- Vodafone M-Vatu. Public docs cover USSD `*120#`, the M-Vatu app, and QR bill pay. There is no published merchant HTTP API, so a top-up stays pending and does not credit the card until Vodafone supplies a contract.
 
 ---
 
@@ -90,7 +90,7 @@ bus-cashless-system/
 │   ├── src/
 │   │   ├── auth/          # Authentication routes
 │   │   ├── cards/         # Card management
-│   │   ├── payments/      # Payment processing & MyCash integration
+│   │   ├── payments/      # Payment processing & M-Vatu integration
 │   │   ├── buses/         # Bus management
 │   │   ├── owners/        # Bus owner management
 │   │   ├── reports/       # Reporting endpoints
@@ -139,30 +139,20 @@ bus-cashless-system/
 
 ### Agents
 - Sell cards
-- Assist MyCash top-ups
+- Assist M-Vatu top-ups
 
 ### Customers
 - Buy prepaid cards
-- Top up cards via MyCash
+- Top up cards via M-Vatu
 - Use cards on buses
 
 ---
 
-## MyCash Integration Flow
+## M-Vatu Integration Flow
 
-MyCash uses a **3-step OTP-based payment process**:
+Passengers choose a card, an amount in VUV, and a Vodafone mobile number. The system records the request. It does not call Digicel and it does not invent a Vodafone endpoint. The card balance increases only after a configured provider returns an approved payment. Fare taps spend the card balance only.
 
-1. `paymentRequest` – create transaction
-2. `sendOTP` – send OTP to customer
-3. `approvePayment` – confirm payment
-
-### Card Top-Up Flow
-
-```
-Customer → MyCash → Backend → Card Wallet → Confirmation
-```
-
-⚠️ MyCash is **not used for direct tap payments on the bus** (OTP is required).
+See `docs/MVATU_INTEGRATION.md`.
 
 ---
 
@@ -181,19 +171,20 @@ PORT=3001
 NODE_ENV=development
 JWT_SECRET=your_jwt_secret_key_here
 
-MYCASH_API_URL=https://<provided-by-digicel>
-MYCASH_API_KEY=********
-MYCASH_USERNAME=********
-MYCASH_PASSWORD=********
-MYCASH_MERCHANT_MOBILE=********
+MVATU_API_URL=
+MVATU_API_KEY=
+MVATU_USERNAME=
+MVATU_PASSWORD=
+MVATU_MERCHANT_MOBILE=
+MVATU_MERCHANT_CODE=
 ```
 
 ---
 
 ## Security Considerations
 
-* MyCash credentials must **never** be exposed to frontend
-* All MyCash API calls must be server-side
+* M-Vatu credentials must **never** be exposed to frontend
+* All M-Vatu API calls must be server-side
 * Use HTTPS only in production
 * Log all payment transactions
 * Prevent duplicate order IDs
@@ -227,7 +218,7 @@ The web app handles **reconciliation**.
 - `PATCH /api/cards/:id/status` - Update status
 
 ### Payments
-- `POST /api/payments/topup/initiate` - Initiate MyCash top-up
+- `POST /api/payments/topup/initiate` - Initiate M-Vatu top-up
 - `POST /api/payments/topup/send-otp` - Send OTP
 - `POST /api/payments/topup/approve` - Approve payment
 - `POST /api/payments/fare` - Process fare payment
@@ -246,7 +237,7 @@ The web app handles **reconciliation**.
 ### Reports
 - `GET /api/reports/dashboard` - Dashboard stats
 - `GET /api/reports/transactions` - Transaction report
-- `GET /api/reports/mycash` - MyCash report
+- `GET /api/reports/mycash` - M-Vatu report
 
 ---
 
@@ -273,7 +264,7 @@ Recommended:
 ## License & Compliance
 
 This system must comply with:
-* Digicel MyCash merchant terms
+* Vodafone M-Vatu merchant terms
 * Local transport regulations
 * Data protection requirements
 
@@ -289,5 +280,5 @@ This system must comply with:
 
 For integration support:
 * Backend team
-* Digicel MyCash integration team
+* Vodafone M-Vatu integration team
 * System administrator
