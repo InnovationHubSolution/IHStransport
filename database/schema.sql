@@ -52,8 +52,8 @@ CREATE TABLE IF NOT EXISTS nfc_devices (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-CREATE INDEX idx_nfc_devices_bus_owner_id ON nfc_devices(bus_owner_id);
-CREATE INDEX idx_nfc_devices_bus_id ON nfc_devices(bus_id);
+CREATE INDEX IF NOT EXISTS idx_nfc_devices_bus_owner_id ON nfc_devices(bus_owner_id);
+CREATE INDEX IF NOT EXISTS idx_nfc_devices_bus_id ON nfc_devices(bus_id);
 
 -- Cards table
 CREATE TABLE IF NOT EXISTS cards (
