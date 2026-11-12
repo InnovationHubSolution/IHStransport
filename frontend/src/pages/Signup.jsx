@@ -69,7 +69,7 @@ const Signup = () => {
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', padding: '20px' }}>
       <div className="card" style={{ width: '100%', maxWidth: '500px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <Link to="/landing" style={{ textDecoration: 'none', color: '#667eea', fontSize: '14px' }}>
+          <Link to="/landing" style={{ textDecoration: 'none', color: '#7FB539', fontSize: '14px', fontWeight: 600 }}>
             ← Back to Home
           </Link>
         </div>
@@ -183,22 +183,17 @@ const Signup = () => {
               fontSize: '14px',
               color: '#856404'
             }}>
-              <strong style={{ color: '#000' }}>📋 Bus Owner Registration:</strong>
+              <strong style={{ color: '#000' }}>Operator registration</strong>
               <p style={{ margin: '8px 0 0 0', color: '#000' }}>
-                After creating your account, please contact the administrator to:
+                This creates your operator record with bank transfer as the payout method. An administrator adds your buses, planes, or ships.
               </p>
-              <ul style={{ margin: '8px 0 0 20px', padding: 0, color: '#000' }}>
-                <li>Link your account to a bus owner record</li>
-                <li>Set up your settlement preferences</li>
-                <li>Add your buses to the system</li>
-              </ul>
             </div>
           )}
 
           <button
             type="submit"
             className="btn btn-primary"
-            style={{ width: '100%', marginTop: '10px' }}
+            style={{ width: '100%', marginTop: '10px', padding: '16px', border: 'none', borderRadius: '12px', color: 'white', fontWeight: 700, background: 'linear-gradient(135deg, #7FB539 0%, #FDB813 100%)' }}
             disabled={loading}
           >
             {loading ? 'Creating Account...' : 'Create Account'}
@@ -207,7 +202,7 @@ const Signup = () => {
 
         <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '14px', color: '#000' }}>
           Already have an account?{' '}
-          <Link to="/login" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
+          <Link to="/login" style={{ color: '#7FB539', textDecoration: 'none', fontWeight: 'bold' }}>
             Login here
           </Link>
         </div>

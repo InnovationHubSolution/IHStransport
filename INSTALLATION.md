@@ -156,7 +156,7 @@ The backend API provides the following endpoints:
 
 - `GET /api/reports/dashboard` - Dashboard statistics
 - `GET /api/reports/transactions` - Transaction reports
-- `GET /api/reports/mycash` - M-Vatu transaction reports
+- `GET /api/reports/mvatu` - M-Vatu transaction reports
 
 ## Troubleshooting
 

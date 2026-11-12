@@ -10,9 +10,9 @@ Summary of changes to the Cashless Transit web app (React frontend and Node/Expr
 - **M-Vatu** – Digicel MyCash calls were removed. Vodafone has not published a merchant HTTP API; see `docs/MVATU_INTEGRATION.md`. Saved settings use `mvatu_*` keys.
 - **Admin-editable M-Vatu credentials** – Stored in `system_settings` (DB). Config is read from DB first, then env.
 - **New routes**
-  - `GET /api/settings/mycash` – Get M-Vatu settings (admin only; secrets masked).
-  - `PUT /api/settings/mycash` – Update M-Vatu settings (admin only).
-  - `GET /api/settings/mycash/status` – Check M-Vatu API connection (admin only).
+  - `GET /api/settings/mvatu` – Get M-Vatu settings (admin only; secrets masked).
+  - `PUT /api/settings/mvatu` – Update M-Vatu settings (admin only).
+  - `GET /api/settings/mvatu/status` – Check M-Vatu API connection (admin only).
 - **Config** – `backend/src/config/mycash-loader.js` loads M-Vatu config from DB + env for all payment calls.
 
 ### M-Vatu Errors & Status
@@ -44,7 +44,7 @@ Summary of changes to the Cashless Transit web app (React frontend and Node/Expr
 ### Settings (Admin only)
 - **New page** – `/settings` (sidebar only for admin).
 - **M-Vatu form** – Edit API URL, API Key, Username, Password, Merchant Mobile, Product ID (key/password optional to keep current).
-- **API status** – “Check connection” calls `/api/settings/mycash/status`; shows “Connected” or “Error &lt;code&gt;” and message; expandable list of M-Vatu error codes 600–606.
+- **API status** – “Check connection” calls `/api/settings/mvatu/status` and shows whether Vodafone has supplied a merchant API.
 - **Errors** – Load/save errors show “API &lt;status&gt;: &lt;message&gt;”.
 
 ### Fleet (Buses)
@@ -92,9 +92,9 @@ Summary of changes to the Cashless Transit web app (React frontend and Node/Expr
 
 | Method | Path | Purpose |
 |--------|------|---------|
-| GET | `/api/settings/mycash` | Get M-Vatu settings (admin, masked) |
-| PUT | `/api/settings/mycash` | Update M-Vatu settings (admin) |
-| GET | `/api/settings/mycash/status` | M-Vatu connection check (admin) |
+| GET | `/api/settings/mvatu` | Get M-Vatu settings (admin, masked) |
+| PUT | `/api/settings/mvatu` | Update M-Vatu settings (admin) |
+| GET | `/api/settings/mvatu/status` | M-Vatu connection check (admin) |
 | POST | `/api/auth/register` | Signup; body `role` only `customer` or `bus_owner` |
 | GET | `/api/buses` | Returns `transport_type` per vehicle |
 | POST | `/api/buses` | Body may include `transport_type` |

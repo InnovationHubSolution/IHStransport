@@ -237,7 +237,7 @@ The web app handles **reconciliation**.
 ### Reports
 - `GET /api/reports/dashboard` - Dashboard stats
 - `GET /api/reports/transactions` - Transaction report
-- `GET /api/reports/mycash` - M-Vatu report
+- `GET /api/reports/mvatu` - M-Vatu report
 
 ---
 

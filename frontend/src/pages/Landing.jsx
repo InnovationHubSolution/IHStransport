@@ -747,7 +747,7 @@ const Landing = () => {
               fontWeight: '800',
               fontFamily: "'Poppins', sans-serif"
             }}>
-              Powerful Features for Bus Owners
+              Powerful Features for Operators
             </h2>
             <p style={{
               fontSize: '18px',
@@ -768,35 +768,35 @@ const Landing = () => {
               {
                 icon: '📊',
                 title: 'Revenue Dashboard',
-                description: 'Real-time revenue tracking with daily, monthly, and total statistics. Monitor earnings from all your buses in one place.',
+                description: 'Real-time revenue tracking with daily, monthly, and total statistics. Monitor earnings from buses, planes, and ships in one place.',
                 color: '#1B3A5F',
                 gradient: 'linear-gradient(135deg, #1B3A5F 0%, #0f172a 100%)'
               },
               {
                 icon: '🗺️',
-                title: 'GPS Bus Tracking',
-                description: 'Track your buses in real-time with GPS coordinates. View location history and verify routes on an interactive map.',
+                title: 'GPS Fleet Tracking',
+                description: 'Track buses, planes, and ships with GPS coordinates. View location history and verify routes on an interactive map.',
                 color: '#7FB539',
                 gradient: 'linear-gradient(135deg, #7FB539 0%, #5a8a29 100%)'
               },
               {
                 icon: '📈',
                 title: 'Analytics & Reports',
-                description: 'Generate detailed reports on transactions, revenue trends, and bus performance. Export data for accounting.',
+                description: 'Generate detailed reports on transactions, revenue trends, and vehicle performance. Export data for accounting.',
                 color: '#FDB813',
                 gradient: 'linear-gradient(135deg, #FDB813 0%, #e09a00 100%)'
               },
               {
                 icon: '💵',
                 title: 'Settlement Management',
-                description: 'Track pending settlements, view payment history, and manage payouts. Know exactly when payments are due.',
+                description: 'Track pending settlements and payout history. An admin records the payment reference when the net amount is paid.',
                 color: '#F26B65',
                 gradient: 'linear-gradient(135deg, #F26B65 0%, #e04842 100%)'
               },
               {
                 icon: '🚌',
                 title: 'Fleet Management',
-                description: 'Manage all your buses, routes, and devices from one dashboard. Monitor bus status and activity.',
+                description: 'Manage buses, planes, ships, routes, and validators from one dashboard.',
                 color: '#7FB539',
                 gradient: 'linear-gradient(135deg, #7FB539 0%, #6a9930 100%)'
               },

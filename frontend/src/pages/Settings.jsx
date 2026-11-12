@@ -160,7 +160,7 @@ const Settings = () => {
             </div>
           )}
           <p style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
-            Digicel error codes are not used. Vodafone has not published M-Vatu merchant error codes.
+            Vodafone has not published M-Vatu merchant error codes.
           </p>
         </div>
 
@@ -232,7 +232,7 @@ const Settings = () => {
               name="merchantMobile"
               value={form.merchantMobile}
               onChange={handleChange}
-              placeholder="e.g. 67810000041"
+              placeholder="+678"
               style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', boxSizing: 'border-box' }}
             />
           </div>
@@ -243,7 +243,7 @@ const Settings = () => {
               name="productId"
               value={form.productId}
               onChange={handleChange}
-              placeholder="e.g. 373"
+              placeholder="Leave blank until Vodafone issues one"
               style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', boxSizing: 'border-box' }}
             />
           </div>
